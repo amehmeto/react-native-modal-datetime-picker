@@ -5,7 +5,9 @@
   "main": "src/index.js",
   "files": [
     "src/",
-    "typings/"
+    "typings/",
+    "plugin/",
+    "app.plugin.js"
   ],
   "typings": "typings/index.d.ts",
   "keywords": [
@@ -51,7 +53,13 @@
   },
   "peerDependencies": {
     "@react-native-community/datetimepicker": ">=6.7.0",
-    "react-native": ">=0.65.0"
+    "react-native": ">=0.65.0",
+    "@expo/config-plugins": ">=7.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@expo/config-plugins": {
+      "optional": true
+    }
   },
   "husky": {
     "hooks": {

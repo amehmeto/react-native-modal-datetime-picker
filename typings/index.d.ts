@@ -308,3 +308,27 @@ export const CancelButton: React.FunctionComponent<CancelButtonPropTypes>;
 export const confirmButtonStyles: ConfirmButtonStylePropTypes;
 
 export const ConfirmButton: React.FunctionComponent<ConfirmButtonPropTypes>;
+
+/**
+ * Expo config plugin types for Android time picker dialog theming.
+ */
+export type ThemedColor = {
+  light: string;
+  dark?: string;
+};
+
+export type TimePickerDialogConfig = {
+  textColorPrimary?: ThemedColor;
+  colorAccent?: ThemedColor;
+  colorControlActivated?: ThemedColor;
+  colorControlHighlight?: ThemedColor;
+  windowBackground?: ThemedColor;
+  textColor?: ThemedColor;
+  textColorSecondary?: ThemedColor;
+};
+
+export type ModalDateTimePickerPluginOptions = {
+  android?: {
+    timePickerDialog?: TimePickerDialogConfig;
+  };
+};

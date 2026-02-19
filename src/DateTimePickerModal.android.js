@@ -4,10 +4,8 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 
 // Memo workaround for https://github.com/react-native-community/datetimepicker/issues/54
 const areEqual = (prevProps, nextProps) => {
-  return (
-    prevProps.isVisible === nextProps.isVisible &&
-    (prevProps.date?.getTime() === nextProps.date?.getTime())
-  );
+  if (prevProps.isVisible && nextProps.isVisible) return true;
+  return false;
 };
 
 const DateTimePickerModal = memo(
