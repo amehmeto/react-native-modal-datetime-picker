@@ -310,25 +310,53 @@ export const confirmButtonStyles: ConfirmButtonStylePropTypes;
 export const ConfirmButton: React.FunctionComponent<ConfirmButtonPropTypes>;
 
 /**
- * Expo config plugin types for Android time picker dialog theming.
+ * Expo config plugin types for Android picker theming.
  */
 export type ThemedColor = {
   light: string;
   dark?: string;
 };
 
-export type TimePickerDialogConfig = {
+export type DialogThemeConfig = {
   textColorPrimary?: ThemedColor;
+  textColorSecondary?: ThemedColor;
+  textColorPrimaryInverse?: ThemedColor;
+  textColorSecondaryInverse?: ThemedColor;
   colorAccent?: ThemedColor;
+  colorPrimary?: ThemedColor;
   colorControlActivated?: ThemedColor;
   colorControlHighlight?: ThemedColor;
   windowBackground?: ThemedColor;
   textColor?: ThemedColor;
-  textColorSecondary?: ThemedColor;
+  buttonBarPositiveButtonStyle?: ThemedColor;
+  parentTheme?: string;
 };
+
+export type TimePickerWidgetConfig = {
+  background?: ThemedColor;
+  headerBackground?: ThemedColor;
+  numbersTextColor?: ThemedColor;
+  numbersBackgroundColor?: ThemedColor;
+  numbersSelectorColor?: ThemedColor;
+  parentTheme?: string;
+};
+
+export type DatePickerWidgetConfig = {
+  headerBackground?: ThemedColor;
+  calendarTextColor?: ThemedColor;
+  yearListSelectorColor?: ThemedColor;
+  dayOfWeekBackground?: ThemedColor;
+  parentTheme?: string;
+};
+
+/** @deprecated Use `DialogThemeConfig` instead. */
+export type TimePickerDialogConfig = DialogThemeConfig;
 
 export type ModalDateTimePickerPluginOptions = {
   android?: {
-    timePickerDialog?: TimePickerDialogConfig;
+    timePickerDialog?: DialogThemeConfig;
+    datePickerDialog?: DialogThemeConfig;
+    timePickerWidget?: TimePickerWidgetConfig;
+    datePickerWidget?: DatePickerWidgetConfig;
   };
 };

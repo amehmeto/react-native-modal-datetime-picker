@@ -7,66 +7,127 @@ const { assignColorValue } = AndroidConfig.Colors;
 
 const moduleName = "ModalDateTimePicker: ";
 
-const TIME_PICKER_DIALOG_ALLOWED_ATTRIBUTES = {
+const DIALOG_ALLOWED_ATTRIBUTES = {
   textColorPrimary: { attrName: "android:textColorPrimary" },
+  textColorSecondary: { attrName: "android:textColorSecondary" },
+  textColorPrimaryInverse: { attrName: "android:textColorPrimaryInverse" },
+  textColorSecondaryInverse: { attrName: "android:textColorSecondaryInverse" },
   colorAccent: { attrName: "colorAccent" },
+  colorPrimary: { attrName: "colorPrimary" },
   colorControlActivated: { attrName: "colorControlActivated" },
   colorControlHighlight: { attrName: "colorControlHighlight" },
   windowBackground: { attrName: "android:windowBackground" },
   textColor: { attrName: "android:textColor" },
-  textColorSecondary: { attrName: "android:textColorSecondary" },
+  buttonBarPositiveButtonStyle: { attrName: "buttonBarPositiveButtonStyle" },
 };
 
-const TIME_PICKER_DIALOG_STYLE_NAME = "TimePickerDialogTheme";
-const TIME_PICKER_DIALOG_THEME_ATTRIBUTE = "android:timePickerDialogTheme";
-const ATTR_PREFIX = "timePickerDialog";
+const TIME_PICKER_WIDGET_ALLOWED_ATTRIBUTES = {
+  background: { attrName: "android:background" },
+  headerBackground: { attrName: "android:headerBackground" },
+  numbersTextColor: { attrName: "android:numbersTextColor" },
+  numbersBackgroundColor: { attrName: "android:numbersBackgroundColor" },
+  numbersSelectorColor: { attrName: "android:numbersSelectorColor" },
+};
+
+const DATE_PICKER_WIDGET_ALLOWED_ATTRIBUTES = {
+  headerBackground: { attrName: "android:headerBackground" },
+  calendarTextColor: { attrName: "android:calendarTextColor" },
+  yearListSelectorColor: { attrName: "android:yearListSelectorColor" },
+  dayOfWeekBackground: { attrName: "android:dayOfWeekBackground" },
+};
+
+const PICKER_CONFIGS = [
+  {
+    optionKey: "timePickerDialog",
+    styleName: "TimePickerDialogTheme",
+    themeAttribute: "android:timePickerDialogTheme",
+    defaultParentTheme: "Theme.AppCompat.Light.Dialog",
+    attrPrefix: "timePickerDialog",
+    allowedAttributes: DIALOG_ALLOWED_ATTRIBUTES,
+  },
+  {
+    optionKey: "datePickerDialog",
+    styleName: "DatePickerDialogTheme",
+    themeAttribute: "android:datePickerDialogTheme",
+    defaultParentTheme: "Theme.AppCompat.Light.Dialog",
+    attrPrefix: "datePickerDialog",
+    allowedAttributes: DIALOG_ALLOWED_ATTRIBUTES,
+  },
+  {
+    optionKey: "timePickerWidget",
+    styleName: "TimePickerWidgetStyle",
+    themeAttribute: "android:timePickerStyle",
+    defaultParentTheme: "android:Widget.Material.Light.TimePicker",
+    attrPrefix: "timePickerWidget",
+    allowedAttributes: TIME_PICKER_WIDGET_ALLOWED_ATTRIBUTES,
+  },
+  {
+    optionKey: "datePickerWidget",
+    styleName: "DatePickerWidgetStyle",
+    themeAttribute: "android:datePickerStyle",
+    defaultParentTheme: "android:Widget.Material.Light.DatePicker",
+    attrPrefix: "datePickerWidget",
+    allowedAttributes: DATE_PICKER_WIDGET_ALLOWED_ATTRIBUTES,
+  },
+];
 
 const insertColorEntries = (android = {}, config, themedColorExtractor) => {
-  const theme = android.timePickerDialog;
-  if (theme) {
-    config.modResults = setAndroidColors(config.modResults, themedColorExtractor, theme);
+  for (const pickerConfig of PICKER_CONFIGS) {
+    const theme = android[pickerConfig.optionKey];
+    if (theme) {
+      config.modResults = setAndroidColors(config.modResults, themedColorExtractor, theme, pickerConfig.attrPrefix);
+    }
   }
 };
 
-const setAndroidColors = (colors, themedColorExtractor, theme) => {
+const setAndroidColors = (colors, themedColorExtractor, theme, attrPrefix) => {
   return Object.entries(theme).reduce((acc, [attrName, colorValues]) => {
+    if (attrName === "parentTheme") {
+      return acc;
+    }
     const color = {
-      name: `${ATTR_PREFIX}_${attrName}`,
+      name: `${attrPrefix}_${attrName}`,
       value: themedColorExtractor(colorValues, attrName) ?? null,
     };
     return assignColorValue(acc, color);
   }, colors);
 };
 
-const setAndroidPickerStyles = (styles, theme) => {
+const setAndroidPickerStyles = (styles, theme, pickerConfig) => {
   if (!theme) {
     return styles;
   }
 
+  const { styleName, themeAttribute, defaultParentTheme, attrPrefix, allowedAttributes } = pickerConfig;
+  const parentTheme = theme.parentTheme || defaultParentTheme;
+
   styles = Object.keys(theme).reduce((acc, userFacingAttrName) => {
-    const entry = TIME_PICKER_DIALOG_ALLOWED_ATTRIBUTES[userFacingAttrName];
+    if (userFacingAttrName === "parentTheme") {
+      return acc;
+    }
+    const entry = allowedAttributes[userFacingAttrName];
     if (!entry) {
       throw new Error(
-        `${moduleName}Invalid attribute name: ${userFacingAttrName}. Supported are ${Object.keys(TIME_PICKER_DIALOG_ALLOWED_ATTRIBUTES).join(", ")}`
+        `${moduleName}Invalid attribute name: ${userFacingAttrName}. Supported for ${pickerConfig.optionKey} are ${Object.keys(allowedAttributes).join(", ")}`
       );
     }
     const { attrName } = entry;
     return assignStylesValue(acc, {
       add: true,
       parent: {
-        name: TIME_PICKER_DIALOG_STYLE_NAME,
-        parent: "Theme.AppCompat.Light.Dialog",
+        name: styleName,
+        parent: parentTheme,
       },
       name: attrName,
-      value: `@color/${ATTR_PREFIX}_${userFacingAttrName}`,
+      value: `@color/${attrPrefix}_${userFacingAttrName}`,
     });
   }, styles);
 
   styles = assignStylesValue(styles, {
     add: true,
     parent: getAppThemeLightNoActionBarGroup(),
-    name: TIME_PICKER_DIALOG_THEME_ATTRIBUTE,
-    value: `@style/${TIME_PICKER_DIALOG_STYLE_NAME}`,
+    name: themeAttribute,
+    value: `@style/${styleName}`,
   });
 
   return styles;
@@ -94,7 +155,9 @@ const withTimePickerDialogTheme = (baseConfig, options = {}) => {
   });
 
   newConfig = withAndroidStyles(newConfig, (config) => {
-    config.modResults = setAndroidPickerStyles(config.modResults, android.timePickerDialog);
+    for (const pickerConfig of PICKER_CONFIGS) {
+      config.modResults = setAndroidPickerStyles(config.modResults, android[pickerConfig.optionKey], pickerConfig);
+    }
     return config;
   });
 
