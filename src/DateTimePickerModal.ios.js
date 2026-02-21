@@ -336,6 +336,20 @@ export const ConfirmButton = ({
   );
 };
 
+ConfirmButton.propTypes = {
+  isDarkModeEnabled: PropTypes.bool,
+  confirmButtonTestID: PropTypes.string,
+  onPress: PropTypes.func.isRequired,
+  label: PropTypes.string.isRequired,
+  buttonTextColorIOS: PropTypes.string,
+  borderColor: PropTypes.string,
+  highlightColor: PropTypes.string,
+  buttonHeight: PropTypes.number,
+  fontSize: PropTypes.number,
+  fontFamily: PropTypes.string,
+  fontWeight: PropTypes.string,
+};
+
 export const confirmButtonStyles = StyleSheet.create({
   button: {
     borderTopWidth: StyleSheet.hairlineWidth,
@@ -404,6 +418,21 @@ export const CancelButton = ({
       </Text>
     </TouchableHighlight>
   );
+};
+
+CancelButton.propTypes = {
+  cancelButtonTestID: PropTypes.string,
+  isDarkModeEnabled: PropTypes.bool,
+  onPress: PropTypes.func.isRequired,
+  label: PropTypes.string.isRequired,
+  buttonTextColorIOS: PropTypes.string,
+  backgroundColor: PropTypes.string,
+  borderRadius: PropTypes.number,
+  highlightColor: PropTypes.string,
+  buttonHeight: PropTypes.number,
+  fontSize: PropTypes.number,
+  fontFamily: PropTypes.string,
+  fontWeight: PropTypes.string,
 };
 
 export const cancelButtonStyles = StyleSheet.create({

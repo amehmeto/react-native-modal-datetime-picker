@@ -146,6 +146,71 @@ export interface DateTimePickerProps {
   customPickerIOS?: PickerComponent;
 
   /**
+   * Background color of the picker container and cancel button (iOS)
+   */
+  backgroundColorIOS?: string;
+
+  /**
+   * Border color of the confirm button (iOS)
+   */
+  borderColorIOS?: string;
+
+  /**
+   * Border radius of the picker container and cancel button (iOS)
+   */
+  borderRadiusIOS?: number;
+
+  /**
+   * Font size for both confirm and cancel button text (iOS)
+   */
+  buttonFontSizeIOS?: number;
+
+  /**
+   * Height for both confirm and cancel buttons (iOS)
+   */
+  buttonHeightIOS?: number;
+
+  /**
+   * Font family for the confirm button text (iOS)
+   */
+  confirmButtonFontFamilyIOS?: string;
+
+  /**
+   * Font family for the cancel button text (iOS)
+   */
+  cancelButtonFontFamilyIOS?: string;
+
+  /**
+   * Font weight for the confirm button text (iOS)
+   */
+  confirmButtonFontWeightIOS?: string;
+
+  /**
+   * Font weight for the cancel button text (iOS)
+   */
+  cancelButtonFontWeightIOS?: string;
+
+  /**
+   * Underlay color for button highlight on press (iOS)
+   */
+  highlightColorIOS?: string;
+
+  /**
+   * Target opacity of the modal backdrop (iOS)
+   */
+  backdropOpacityIOS?: number;
+
+  /**
+   * Background color of the modal backdrop (iOS)
+   */
+  backdropColorIOS?: string;
+
+  /**
+   * Duration of the modal show/hide animation in ms (iOS)
+   */
+  animationDurationIOS?: number;
+
+  /**
    * Style of the backgrop (iOS)
    */
   backdropStyleIOS?: ViewStyle;
