@@ -11,7 +11,7 @@ import {
 } from "react-native";
 
 const MODAL_ANIM_DURATION = 300;
-const MODAL_BACKDROP_OPACITY = 0.4;
+const MODAL_BACKDROP_OPACITY = 0.6;
 
 export class Modal extends Component {
   static propTypes = {
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: "black",
+    backgroundColor: "#020617",
     opacity: 0,
   },
   content: {

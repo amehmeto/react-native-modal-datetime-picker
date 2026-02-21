@@ -12,14 +12,14 @@ import Modal from "./Modal";
 import { isIphoneX } from "./utils";
 
 export const BACKGROUND_COLOR_LIGHT = "white";
-export const BACKGROUND_COLOR_DARK = "#0E0E0E";
+export const BACKGROUND_COLOR_DARK = "#16213E";
 export const BORDER_COLOR = "#d5d5d5";
-export const BORDER_COLOR_DARK = "#272729";
-export const BORDER_RADIUS = 13;
+export const BORDER_COLOR_DARK = "#222E47";
+export const BORDER_RADIUS = 20;
 export const BUTTON_FONT_WEIGHT = "normal";
-export const BUTTON_FONT_COLOR = "#007ff9";
+export const BUTTON_FONT_COLOR = "#38BDF8";
 export const BUTTON_FONT_SIZE = 20;
-export const HIGHLIGHT_COLOR_DARK = "#444444";
+export const HIGHLIGHT_COLOR_DARK = "#1C2D52";
 export const HIGHLIGHT_COLOR_LIGHT = "#ebebeb";
 
 export class DateTimePickerModal extends React.PureComponent {
@@ -298,6 +298,7 @@ export const confirmButtonStyles = StyleSheet.create({
     color: BUTTON_FONT_COLOR,
     fontSize: BUTTON_FONT_SIZE,
     fontWeight: BUTTON_FONT_WEIGHT,
+    fontFamily: "Inter_400Regular",
     backgroundColor: "transparent",
   },
 });
@@ -356,6 +357,7 @@ export const cancelButtonStyles = StyleSheet.create({
     color: BUTTON_FONT_COLOR,
     fontSize: BUTTON_FONT_SIZE,
     fontWeight: "600",
+    fontFamily: "Inter_600SemiBold",
     backgroundColor: "transparent",
   },
 });
