@@ -19,6 +19,9 @@ export class Modal extends Component {
     onHide: PropTypes.func,
     isVisible: PropTypes.bool,
     contentStyle: PropTypes.any,
+    backdropOpacity: PropTypes.number,
+    backdropColor: PropTypes.string,
+    animationDuration: PropTypes.number,
   };
 
   static defaultProps = {
@@ -79,7 +82,7 @@ export class Modal extends Component {
       easing: Easing.inOut(Easing.quad),
       // Using native driver in the modal makes the content flash
       useNativeDriver: false,
-      duration: MODAL_ANIM_DURATION,
+      duration: this.props.animationDuration ?? MODAL_ANIM_DURATION,
       toValue: 1,
     }).start();
   };
@@ -89,7 +92,7 @@ export class Modal extends Component {
       easing: Easing.inOut(Easing.quad),
       // Using native driver in the modal makes the content flash
       useNativeDriver: false,
-      duration: MODAL_ANIM_DURATION,
+      duration: this.props.animationDuration ?? MODAL_ANIM_DURATION,
       toValue: 0,
     }).start(() => {
       if (this._isMounted) {
@@ -104,13 +107,16 @@ export class Modal extends Component {
       onBackdropPress,
       contentStyle,
       backdropStyle,
+      backdropOpacity,
+      backdropColor,
+      animationDuration,
       ...otherProps
     } = this.props;
     const { deviceHeight, deviceWidth, isVisible } = this.state;
     const backdropAnimatedStyle = {
       opacity: this.animVal.interpolate({
         inputRange: [0, 1],
-        outputRange: [0, MODAL_BACKDROP_OPACITY],
+        outputRange: [0, backdropOpacity ?? MODAL_BACKDROP_OPACITY],
       }),
     };
     const contentAnimatedStyle = {
@@ -137,6 +143,7 @@ export class Modal extends Component {
               styles.backdrop,
               backdropAnimatedStyle,
               { width: deviceWidth, height: deviceHeight },
+              backdropColor && { backgroundColor: backdropColor },
               backdropStyle,
             ]}
           />
