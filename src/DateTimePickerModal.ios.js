@@ -48,6 +48,20 @@ export class DateTimePickerModal extends React.PureComponent {
     onHide: PropTypes.func,
     maximumDate: PropTypes.instanceOf(Date),
     minimumDate: PropTypes.instanceOf(Date),
+    backgroundColorIOS: PropTypes.string,
+    borderColorIOS: PropTypes.string,
+    borderColorDarkIOS: PropTypes.string,
+    borderRadiusIOS: PropTypes.number,
+    buttonFontSizeIOS: PropTypes.number,
+    buttonHeightIOS: PropTypes.number,
+    confirmButtonFontFamilyIOS: PropTypes.string,
+    cancelButtonFontFamilyIOS: PropTypes.string,
+    confirmButtonFontWeightIOS: PropTypes.string,
+    cancelButtonFontWeightIOS: PropTypes.string,
+    highlightColorIOS: PropTypes.string,
+    backdropOpacityIOS: PropTypes.number,
+    backdropColorIOS: PropTypes.string,
+    animationDurationIOS: PropTypes.number,
   };
 
   static defaultProps = {
@@ -127,6 +141,20 @@ export class DateTimePickerModal extends React.PureComponent {
       onHide,
       backdropStyleIOS,
       buttonTextColorIOS,
+      backgroundColorIOS,
+      borderColorIOS,
+      borderColorDarkIOS,
+      borderRadiusIOS,
+      buttonFontSizeIOS,
+      buttonHeightIOS,
+      confirmButtonFontFamilyIOS,
+      cancelButtonFontFamilyIOS,
+      confirmButtonFontWeightIOS,
+      cancelButtonFontWeightIOS,
+      highlightColorIOS,
+      backdropOpacityIOS,
+      backdropColorIOS,
+      animationDurationIOS,
       ...otherProps
     } = this.props;
     const isAppearanceModuleAvailable = !!(
@@ -145,6 +173,10 @@ export class DateTimePickerModal extends React.PureComponent {
     const themedContainerStyle = _isDarkModeEnabled
       ? pickerStyles.containerDark
       : pickerStyles.containerLight;
+    const containerOverrides = {
+      ...(backgroundColorIOS && { backgroundColor: backgroundColorIOS }),
+      ...(borderRadiusIOS != null && { borderRadius: borderRadiusIOS }),
+    };
 
     return (
       <Modal
@@ -153,12 +185,16 @@ export class DateTimePickerModal extends React.PureComponent {
         onBackdropPress={this.handleCancel}
         onHide={this.handleHide}
         backdropStyle={backdropStyleIOS}
+        backdropOpacity={backdropOpacityIOS}
+        backdropColor={backdropColorIOS}
+        animationDuration={animationDurationIOS}
         {...modalPropsIOS}
       >
         <View
           style={[
             pickerStyles.container,
             themedContainerStyle,
+            containerOverrides,
             pickerContainerStyleIOS,
           ]}
         >
@@ -203,6 +239,12 @@ export class DateTimePickerModal extends React.PureComponent {
             onPress={this.handleConfirm}
             label={confirmTextIOS}
             buttonTextColorIOS={buttonTextColorIOS}
+            borderColor={_isDarkModeEnabled ? (borderColorDarkIOS || borderColorIOS) : borderColorIOS}
+            highlightColor={highlightColorIOS}
+            buttonHeight={buttonHeightIOS}
+            fontSize={buttonFontSizeIOS}
+            fontFamily={confirmButtonFontFamilyIOS}
+            fontWeight={confirmButtonFontWeightIOS}
           />
         </View>
         <CancelButtonComponent
@@ -211,6 +253,13 @@ export class DateTimePickerModal extends React.PureComponent {
           onPress={this.handleCancel}
           label={cancelTextIOS}
           buttonTextColorIOS={buttonTextColorIOS}
+          backgroundColor={backgroundColorIOS}
+          borderRadius={borderRadiusIOS}
+          highlightColor={highlightColorIOS}
+          buttonHeight={buttonHeightIOS}
+          fontSize={buttonFontSizeIOS}
+          fontFamily={cancelButtonFontFamilyIOS}
+          fontWeight={cancelButtonFontWeightIOS}
         />
       </Modal>
     );
@@ -249,35 +298,58 @@ export const ConfirmButton = ({
   onPress,
   label,
   buttonTextColorIOS,
+  borderColor,
+  highlightColor,
+  buttonHeight,
+  fontSize,
+  fontFamily,
+  fontWeight,
   style = confirmButtonStyles,
 }) => {
   const themedButtonStyle = isDarkModeEnabled
     ? confirmButtonStyles.buttonDark
     : confirmButtonStyles.buttonLight;
 
-  const underlayColor = isDarkModeEnabled
+  const underlayColor = highlightColor ?? (isDarkModeEnabled
     ? HIGHLIGHT_COLOR_DARK
-    : HIGHLIGHT_COLOR_LIGHT;
+    : HIGHLIGHT_COLOR_LIGHT);
+  const heightStyle = buttonHeight != null ? { height: buttonHeight } : undefined;
+  const borderOverride = borderColor ? { borderColor } : undefined;
+  const textOverrides = {
+    ...(fontSize != null && { fontSize }),
+    ...(fontFamily && { fontFamily }),
+    ...(fontWeight && { fontWeight }),
+    ...(buttonTextColorIOS && { color: buttonTextColorIOS }),
+  };
   return (
     <TouchableHighlight
       testID={confirmButtonTestID}
-      style={[themedButtonStyle, style.button]}
+      style={[themedButtonStyle, style.button, heightStyle, borderOverride]}
       underlayColor={underlayColor}
       onPress={onPress}
       accessible={true}
       accessibilityRole="button"
       accessibilityLabel={label}
     >
-      <Text
-        style={[
-          style.text,
-          buttonTextColorIOS && { color: buttonTextColorIOS },
-        ]}
-      >
+      <Text style={[style.text, textOverrides]}>
         {label}
       </Text>
     </TouchableHighlight>
   );
+};
+
+ConfirmButton.propTypes = {
+  isDarkModeEnabled: PropTypes.bool,
+  confirmButtonTestID: PropTypes.string,
+  onPress: PropTypes.func.isRequired,
+  label: PropTypes.string.isRequired,
+  buttonTextColorIOS: PropTypes.string,
+  borderColor: PropTypes.string,
+  highlightColor: PropTypes.string,
+  buttonHeight: PropTypes.number,
+  fontSize: PropTypes.number,
+  fontFamily: PropTypes.string,
+  fontWeight: PropTypes.string,
 };
 
 export const confirmButtonStyles = StyleSheet.create({
@@ -309,34 +381,60 @@ export const CancelButton = ({
   onPress,
   label,
   buttonTextColorIOS,
+  backgroundColor,
+  borderRadius,
+  highlightColor,
+  buttonHeight,
+  fontSize,
+  fontFamily,
+  fontWeight,
   style = cancelButtonStyles,
 }) => {
   const themedButtonStyle = isDarkModeEnabled
     ? cancelButtonStyles.buttonDark
     : cancelButtonStyles.buttonLight;
-  const underlayColor = isDarkModeEnabled
+  const underlayColor = highlightColor ?? (isDarkModeEnabled
     ? HIGHLIGHT_COLOR_DARK
-    : HIGHLIGHT_COLOR_LIGHT;
+    : HIGHLIGHT_COLOR_LIGHT);
+  const heightStyle = buttonHeight != null ? { height: buttonHeight } : undefined;
+  const bgOverride = backgroundColor ? { backgroundColor } : undefined;
+  const radiusOverride = borderRadius != null ? { borderRadius } : undefined;
+  const textOverrides = {
+    ...(fontSize != null && { fontSize }),
+    ...(fontFamily && { fontFamily }),
+    ...(fontWeight && { fontWeight }),
+    ...(buttonTextColorIOS && { color: buttonTextColorIOS }),
+  };
   return (
     <TouchableHighlight
       testID={cancelButtonTestID}
-      style={[themedButtonStyle, style.button]}
+      style={[themedButtonStyle, style.button, heightStyle, bgOverride, radiusOverride]}
       underlayColor={underlayColor}
       onPress={onPress}
       accessible={true}
       accessibilityRole="button"
       accessibilityLabel={label}
     >
-      <Text
-        style={[
-          style.text,
-          buttonTextColorIOS && { color: buttonTextColorIOS },
-        ]}
-      >
+      <Text style={[style.text, textOverrides]}>
         {label}
       </Text>
     </TouchableHighlight>
   );
+};
+
+CancelButton.propTypes = {
+  cancelButtonTestID: PropTypes.string,
+  isDarkModeEnabled: PropTypes.bool,
+  onPress: PropTypes.func.isRequired,
+  label: PropTypes.string.isRequired,
+  buttonTextColorIOS: PropTypes.string,
+  backgroundColor: PropTypes.string,
+  borderRadius: PropTypes.number,
+  highlightColor: PropTypes.string,
+  buttonHeight: PropTypes.number,
+  fontSize: PropTypes.number,
+  fontFamily: PropTypes.string,
+  fontWeight: PropTypes.string,
 };
 
 export const cancelButtonStyles = StyleSheet.create({

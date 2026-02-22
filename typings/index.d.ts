@@ -146,6 +146,77 @@ export interface DateTimePickerProps {
   customPickerIOS?: PickerComponent;
 
   /**
+   * Background color of the picker container and cancel button (iOS)
+   */
+  backgroundColorIOS?: string;
+
+  /**
+   * Border color of the confirm button in light mode (iOS)
+   */
+  borderColorIOS?: string;
+
+  /**
+   * Border color of the confirm button in dark mode (iOS).
+   * Falls back to borderColorIOS if not set.
+   */
+  borderColorDarkIOS?: string;
+
+  /**
+   * Border radius of the picker container and cancel button (iOS)
+   */
+  borderRadiusIOS?: number;
+
+  /**
+   * Font size for both confirm and cancel button text (iOS)
+   */
+  buttonFontSizeIOS?: number;
+
+  /**
+   * Height for both confirm and cancel buttons (iOS)
+   */
+  buttonHeightIOS?: number;
+
+  /**
+   * Font family for the confirm button text (iOS)
+   */
+  confirmButtonFontFamilyIOS?: string;
+
+  /**
+   * Font family for the cancel button text (iOS)
+   */
+  cancelButtonFontFamilyIOS?: string;
+
+  /**
+   * Font weight for the confirm button text (iOS)
+   */
+  confirmButtonFontWeightIOS?: string;
+
+  /**
+   * Font weight for the cancel button text (iOS)
+   */
+  cancelButtonFontWeightIOS?: string;
+
+  /**
+   * Underlay color for button highlight on press (iOS)
+   */
+  highlightColorIOS?: string;
+
+  /**
+   * Target opacity of the modal backdrop (iOS)
+   */
+  backdropOpacityIOS?: number;
+
+  /**
+   * Background color of the modal backdrop (iOS)
+   */
+  backdropColorIOS?: string;
+
+  /**
+   * Duration of the modal show/hide animation in ms (iOS)
+   */
+  animationDurationIOS?: number;
+
+  /**
    * Style of the backgrop (iOS)
    */
   backdropStyleIOS?: ViewStyle;
@@ -310,25 +381,66 @@ export const confirmButtonStyles: ConfirmButtonStylePropTypes;
 export const ConfirmButton: React.FunctionComponent<ConfirmButtonPropTypes>;
 
 /**
- * Expo config plugin types for Android time picker dialog theming.
+ * Expo config plugin types for Android picker theming.
  */
 export type ThemedColor = {
   light: string;
   dark?: string;
 };
 
-export type TimePickerDialogConfig = {
+export type DialogThemeConfig = {
   textColorPrimary?: ThemedColor;
+  textColorSecondary?: ThemedColor;
+  textColorPrimaryInverse?: ThemedColor;
+  textColorSecondaryInverse?: ThemedColor;
   colorAccent?: ThemedColor;
+  colorPrimary?: ThemedColor;
   colorControlActivated?: ThemedColor;
   colorControlHighlight?: ThemedColor;
+  colorControlNormal?: ThemedColor;
   windowBackground?: ThemedColor;
   textColor?: ThemedColor;
-  textColorSecondary?: ThemedColor;
+  /** Literal dimension value, e.g. "8dp". Requires API 28+. */
+  dialogCornerRadius?: string;
+  /** Literal style reference, e.g. "@style/MyPositiveButtonStyle" */
+  buttonBarPositiveButtonStyle?: string;
+  /** Literal style reference, e.g. "@style/MyNegativeButtonStyle" */
+  buttonBarNegativeButtonStyle?: string;
+  parentTheme?: string;
 };
+
+export type TimePickerWidgetConfig = {
+  background?: ThemedColor;
+  headerBackground?: ThemedColor;
+  headerSelectedTextColor?: ThemedColor;
+  numbersTextColor?: ThemedColor;
+  numbersInnerTextColor?: ThemedColor;
+  numbersBackgroundColor?: ThemedColor;
+  numbersSelectorColor?: ThemedColor;
+  amPmTextColor?: ThemedColor;
+  amPmBackgroundColor?: ThemedColor;
+  amPmSelectedBackgroundColor?: ThemedColor;
+  parentTheme?: string;
+};
+
+export type DatePickerWidgetConfig = {
+  headerBackground?: ThemedColor;
+  headerSelectedTextColor?: ThemedColor;
+  calendarTextColor?: ThemedColor;
+  calendarSelectedTextColor?: ThemedColor;
+  yearListSelectorColor?: ThemedColor;
+  dayOfWeekBackground?: ThemedColor;
+  parentTheme?: string;
+};
+
+/** @deprecated Use `DialogThemeConfig` instead. */
+export type TimePickerDialogConfig = DialogThemeConfig;
 
 export type ModalDateTimePickerPluginOptions = {
   android?: {
-    timePickerDialog?: TimePickerDialogConfig;
+    timePickerDialog?: DialogThemeConfig;
+    datePickerDialog?: DialogThemeConfig;
+    timePickerWidget?: TimePickerWidgetConfig;
+    datePickerWidget?: DatePickerWidgetConfig;
   };
 };
