@@ -151,9 +151,15 @@ export interface DateTimePickerProps {
   backgroundColorIOS?: string;
 
   /**
-   * Border color of the confirm button (iOS)
+   * Border color of the confirm button in light mode (iOS)
    */
   borderColorIOS?: string;
+
+  /**
+   * Border color of the confirm button in dark mode (iOS).
+   * Falls back to borderColorIOS if not set.
+   */
+  borderColorDarkIOS?: string;
 
   /**
    * Border radius of the picker container and cancel button (iOS)
@@ -394,9 +400,12 @@ export type DialogThemeConfig = {
   colorControlNormal?: ThemedColor;
   windowBackground?: ThemedColor;
   textColor?: ThemedColor;
-  dialogCornerRadius?: ThemedColor;
-  buttonBarPositiveButtonStyle?: ThemedColor;
-  buttonBarNegativeButtonStyle?: ThemedColor;
+  /** Literal dimension value, e.g. "8dp". Requires API 28+. */
+  dialogCornerRadius?: string;
+  /** Literal style reference, e.g. "@style/MyPositiveButtonStyle" */
+  buttonBarPositiveButtonStyle?: string;
+  /** Literal style reference, e.g. "@style/MyNegativeButtonStyle" */
+  buttonBarNegativeButtonStyle?: string;
   parentTheme?: string;
 };
 

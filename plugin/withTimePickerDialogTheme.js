@@ -19,9 +19,9 @@ const DIALOG_ALLOWED_ATTRIBUTES = {
   colorControlNormal: { attrName: "android:colorControlNormal" },
   windowBackground: { attrName: "android:windowBackground" },
   textColor: { attrName: "android:textColor" },
-  dialogCornerRadius: { attrName: "android:dialogCornerRadius" },
-  buttonBarPositiveButtonStyle: { attrName: "buttonBarPositiveButtonStyle" },
-  buttonBarNegativeButtonStyle: { attrName: "buttonBarNegativeButtonStyle" },
+  dialogCornerRadius: { attrName: "android:dialogCornerRadius", literal: true },
+  buttonBarPositiveButtonStyle: { attrName: "buttonBarPositiveButtonStyle", literal: true },
+  buttonBarNegativeButtonStyle: { attrName: "buttonBarNegativeButtonStyle", literal: true },
 };
 
 const TIME_PICKER_WIDGET_ALLOWED_ATTRIBUTES = {
@@ -85,14 +85,18 @@ const insertColorEntries = (android = {}, config, themedColorExtractor) => {
   for (const pickerConfig of PICKER_CONFIGS) {
     const theme = android[pickerConfig.optionKey];
     if (theme) {
-      config.modResults = setAndroidColors(config.modResults, themedColorExtractor, theme, pickerConfig.attrPrefix);
+      config.modResults = setAndroidColors(config.modResults, themedColorExtractor, theme, pickerConfig.attrPrefix, pickerConfig.allowedAttributes);
     }
   }
 };
 
-const setAndroidColors = (colors, themedColorExtractor, theme, attrPrefix) => {
+const setAndroidColors = (colors, themedColorExtractor, theme, attrPrefix, allowedAttributes) => {
   return Object.entries(theme).reduce((acc, [attrName, colorValues]) => {
     if (attrName === "parentTheme") {
+      return acc;
+    }
+    const entry = allowedAttributes[attrName];
+    if (entry && entry.literal) {
       return acc;
     }
     const color = {
@@ -121,7 +125,10 @@ const setAndroidPickerStyles = (styles, theme, pickerConfig) => {
         `${moduleName}Invalid attribute name: ${userFacingAttrName}. Supported for ${pickerConfig.optionKey} are ${Object.keys(allowedAttributes).join(", ")}`
       );
     }
-    const { attrName } = entry;
+    const { attrName, literal } = entry;
+    const value = literal
+      ? theme[userFacingAttrName]
+      : `@color/${attrPrefix}_${userFacingAttrName}`;
     return assignStylesValue(acc, {
       add: true,
       parent: {
@@ -129,7 +136,7 @@ const setAndroidPickerStyles = (styles, theme, pickerConfig) => {
         parent: parentTheme,
       },
       name: attrName,
-      value: `@color/${attrPrefix}_${userFacingAttrName}`,
+      value,
     });
   }, styles);
 

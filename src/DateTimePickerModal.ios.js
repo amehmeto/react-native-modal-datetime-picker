@@ -50,6 +50,7 @@ export class DateTimePickerModal extends React.PureComponent {
     minimumDate: PropTypes.instanceOf(Date),
     backgroundColorIOS: PropTypes.string,
     borderColorIOS: PropTypes.string,
+    borderColorDarkIOS: PropTypes.string,
     borderRadiusIOS: PropTypes.number,
     buttonFontSizeIOS: PropTypes.number,
     buttonHeightIOS: PropTypes.number,
@@ -142,6 +143,7 @@ export class DateTimePickerModal extends React.PureComponent {
       buttonTextColorIOS,
       backgroundColorIOS,
       borderColorIOS,
+      borderColorDarkIOS,
       borderRadiusIOS,
       buttonFontSizeIOS,
       buttonHeightIOS,
@@ -237,7 +239,7 @@ export class DateTimePickerModal extends React.PureComponent {
             onPress={this.handleConfirm}
             label={confirmTextIOS}
             buttonTextColorIOS={buttonTextColorIOS}
-            borderColor={borderColorIOS}
+            borderColor={_isDarkModeEnabled ? (borderColorDarkIOS || borderColorIOS) : borderColorIOS}
             highlightColor={highlightColorIOS}
             buttonHeight={buttonHeightIOS}
             fontSize={buttonFontSizeIOS}
