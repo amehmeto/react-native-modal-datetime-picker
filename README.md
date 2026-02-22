@@ -116,6 +116,148 @@ export default Example;
 | `pickerContainerStyleIOS` | style     |              | The style of the picker container (iOS)                                                                                                     |
 | `pickerStyleIOS`          | style     |              | The style of the picker component wrapper (iOS)                                                                                             |
 | `pickerComponentStyleIOS` | style     |              | The style applied to the actual picker component - this can be either a native iOS picker or a custom one if `customPickerIOS` was provided |
+| `backgroundColorIOS`          | string |              | Background color of the picker container and cancel button (iOS)                                                                            |
+| `borderColorIOS`              | string |              | Border color of the confirm button in light mode (iOS)                                                                                      |
+| `borderColorDarkIOS`          | string |              | Border color of the confirm button in dark mode; falls back to `borderColorIOS` (iOS)                                                       |
+| `borderRadiusIOS`             | number |              | Border radius of the picker container and cancel button (iOS)                                                                               |
+| `buttonFontSizeIOS`           | number |              | Font size for the confirm and cancel buttons (iOS)                                                                                          |
+| `buttonHeightIOS`             | number |              | Height of the confirm and cancel buttons (iOS)                                                                                              |
+| `confirmButtonFontFamilyIOS`  | string |              | Font family for the confirm button text (iOS)                                                                                               |
+| `cancelButtonFontFamilyIOS`   | string |              | Font family for the cancel button text (iOS)                                                                                                |
+| `confirmButtonFontWeightIOS`  | string |              | Font weight for the confirm button text (iOS)                                                                                               |
+| `cancelButtonFontWeightIOS`   | string |              | Font weight for the cancel button text (iOS)                                                                                                |
+| `highlightColorIOS`           | string |              | Underlay color for button press highlight (iOS)                                                                                             |
+| `backdropOpacityIOS`          | number | 0.6          | Target opacity of the modal backdrop (iOS)                                                                                                  |
+| `backdropColorIOS`            | string | "#020617"    | Background color of the modal backdrop (iOS)                                                                                                |
+| `animationDurationIOS`        | number | 300          | Duration of the modal show/hide animation in milliseconds (iOS)                                                                             |
+
+## Expo Config Plugin (Android Theming)
+
+If you are using [Expo](https://expo.io/), you can customize the Android date and time picker colors and styles via the Expo config plugin. Add the plugin to your `app.json` (or `app.config.js`):
+
+```json
+{
+  "expo": {
+    "plugins": [
+      [
+        "react-native-modal-datetime-picker",
+        {
+          "android": {
+            "timePickerDialog": { ... },
+            "datePickerDialog": { ... },
+            "timePickerWidget": { ... },
+            "datePickerWidget": { ... }
+          }
+        }
+      ]
+    ]
+  }
+}
+```
+
+There are **4 scopes** you can configure:
+
+| Scope              | What it themes                                   | Default parent theme                         |
+| ------------------ | ------------------------------------------------ | -------------------------------------------- |
+| `timePickerDialog` | The dialog that wraps the time picker             | `Theme.AppCompat.Light.Dialog`               |
+| `datePickerDialog` | The dialog that wraps the date picker             | `Theme.AppCompat.Light.Dialog`               |
+| `timePickerWidget` | The time picker widget inside the dialog          | `android:Widget.Material.Light.TimePicker`   |
+| `datePickerWidget` | The date picker widget inside the dialog          | `android:Widget.Material.Light.DatePicker`   |
+
+### Color values
+
+Most attributes accept a `ThemedColor` object with a required `light` value and an optional `dark` value for dark-mode support:
+
+```json
+{ "light": "#ffffff", "dark": "#000000" }
+```
+
+### Dialog attributes (`timePickerDialog` / `datePickerDialog`)
+
+| Attribute                      | Type          | Description                                             |
+| ------------------------------ | ------------- | ------------------------------------------------------- |
+| `textColorPrimary`             | `ThemedColor` | Primary text color                                      |
+| `textColorSecondary`           | `ThemedColor` | Secondary text color                                    |
+| `textColorPrimaryInverse`      | `ThemedColor` | Primary inverse text color                              |
+| `textColorSecondaryInverse`    | `ThemedColor` | Secondary inverse text color                            |
+| `colorAccent`                  | `ThemedColor` | Accent color (selection, highlights)                    |
+| `colorPrimary`                 | `ThemedColor` | Primary color                                           |
+| `colorControlActivated`        | `ThemedColor` | Color of activated controls                             |
+| `colorControlHighlight`        | `ThemedColor` | Color of control highlights                             |
+| `colorControlNormal`           | `ThemedColor` | Color of normal controls                                |
+| `windowBackground`             | `ThemedColor` | Dialog window background color                          |
+| `textColor`                    | `ThemedColor` | General text color                                      |
+| `dialogCornerRadius`           | `string`      | Literal dimension value, e.g. `"8dp"` (API 28+)        |
+| `buttonBarPositiveButtonStyle` | `string`      | Literal style reference, e.g. `"@style/MyBtnStyle"`    |
+| `buttonBarNegativeButtonStyle` | `string`      | Literal style reference, e.g. `"@style/MyBtnStyle"`    |
+| `parentTheme`                  | `string`      | Override the default parent theme for this dialog style |
+
+> **Note:** `dialogCornerRadius`, `buttonBarPositiveButtonStyle`, and `buttonBarNegativeButtonStyle` are **literal** attributes — they take a direct string value instead of a `ThemedColor`.
+
+### Time picker widget attributes (`timePickerWidget`)
+
+| Attribute                    | Type          | Description                                  |
+| ---------------------------- | ------------- | -------------------------------------------- |
+| `background`                 | `ThemedColor` | Widget background color                      |
+| `headerBackground`           | `ThemedColor` | Header background color                      |
+| `headerSelectedTextColor`    | `ThemedColor` | Selected text color in the header            |
+| `numbersTextColor`           | `ThemedColor` | Color of the clock numbers                   |
+| `numbersInnerTextColor`      | `ThemedColor` | Color of the inner clock numbers (24h ring)  |
+| `numbersBackgroundColor`     | `ThemedColor` | Background color of the clock face           |
+| `numbersSelectorColor`       | `ThemedColor` | Color of the clock hand / selector           |
+| `amPmTextColor`              | `ThemedColor` | AM/PM text color                             |
+| `amPmBackgroundColor`        | `ThemedColor` | AM/PM background color                       |
+| `amPmSelectedBackgroundColor`| `ThemedColor` | AM/PM selected background color              |
+| `parentTheme`                | `string`      | Override the default parent theme             |
+
+### Date picker widget attributes (`datePickerWidget`)
+
+| Attribute                    | Type          | Description                                  |
+| ---------------------------- | ------------- | -------------------------------------------- |
+| `headerBackground`           | `ThemedColor` | Header background color                      |
+| `headerSelectedTextColor`    | `ThemedColor` | Selected text color in the header            |
+| `calendarTextColor`          | `ThemedColor` | Color of the calendar day numbers            |
+| `calendarSelectedTextColor`  | `ThemedColor` | Color of the selected day text               |
+| `yearListSelectorColor`      | `ThemedColor` | Color of the year list selector              |
+| `dayOfWeekBackground`        | `ThemedColor` | Background color of the day-of-week row      |
+| `parentTheme`                | `string`      | Override the default parent theme             |
+
+### Complete example
+
+```json
+{
+  "expo": {
+    "plugins": [
+      [
+        "react-native-modal-datetime-picker",
+        {
+          "android": {
+            "datePickerDialog": {
+              "colorAccent": { "light": "#FF5722", "dark": "#FF8A65" },
+              "windowBackground": { "light": "#FFFFFF", "dark": "#1E1E1E" },
+              "textColorPrimary": { "light": "#212121", "dark": "#EEEEEE" },
+              "dialogCornerRadius": "12dp",
+              "parentTheme": "Theme.MaterialComponents.Light.Dialog"
+            },
+            "timePickerDialog": {
+              "colorAccent": { "light": "#FF5722", "dark": "#FF8A65" },
+              "windowBackground": { "light": "#FFFFFF", "dark": "#1E1E1E" }
+            },
+            "datePickerWidget": {
+              "headerBackground": { "light": "#FF5722", "dark": "#FF8A65" },
+              "calendarSelectedTextColor": { "light": "#FFFFFF" }
+            },
+            "timePickerWidget": {
+              "headerBackground": { "light": "#FF5722", "dark": "#FF8A65" },
+              "numbersSelectorColor": { "light": "#FF5722", "dark": "#FF8A65" }
+            }
+          }
+        }
+      ]
+    ]
+  }
+}
+```
 
 ## Frequently Asked Questions
 
@@ -197,8 +339,8 @@ You can use the [`minimumDate`](https://github.com/react-native-datetimepicker/d
 
 ### How do I change the color of the Android date and time pickers?
 
-This is more a React-Native specific question than a react-native-modal-datetime-picker one.  
-See issue [#29](https://github.com/mmazzarolo/react-native-modal-datetime-picker/issues/29) and [#106](https://github.com/mmazzarolo/react-native-modal-datetime-picker/issues/106) for some solutions.
+If you are using Expo, see the [Expo Config Plugin (Android Theming)](#expo-config-plugin-android-theming) section above — it lets you customize colors, backgrounds, and styles for both the date and time pickers directly from your `app.json`.
+For non-Expo (bare) projects, you can override the picker theme in your Android `styles.xml`. See issue [#29](https://github.com/mmazzarolo/react-native-modal-datetime-picker/issues/29) and [#106](https://github.com/mmazzarolo/react-native-modal-datetime-picker/issues/106) for examples.
 
 ### How to set a 24-hours format in iOS?
 
