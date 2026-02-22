@@ -16,22 +16,32 @@ const DIALOG_ALLOWED_ATTRIBUTES = {
   colorPrimary: { attrName: "colorPrimary" },
   colorControlActivated: { attrName: "colorControlActivated" },
   colorControlHighlight: { attrName: "colorControlHighlight" },
+  colorControlNormal: { attrName: "android:colorControlNormal" },
   windowBackground: { attrName: "android:windowBackground" },
   textColor: { attrName: "android:textColor" },
+  dialogCornerRadius: { attrName: "android:dialogCornerRadius" },
   buttonBarPositiveButtonStyle: { attrName: "buttonBarPositiveButtonStyle" },
+  buttonBarNegativeButtonStyle: { attrName: "buttonBarNegativeButtonStyle" },
 };
 
 const TIME_PICKER_WIDGET_ALLOWED_ATTRIBUTES = {
   background: { attrName: "android:background" },
   headerBackground: { attrName: "android:headerBackground" },
+  headerSelectedTextColor: { attrName: "android:headerSelectedTextColor" },
   numbersTextColor: { attrName: "android:numbersTextColor" },
+  numbersInnerTextColor: { attrName: "android:numbersInnerTextColor" },
   numbersBackgroundColor: { attrName: "android:numbersBackgroundColor" },
   numbersSelectorColor: { attrName: "android:numbersSelectorColor" },
+  amPmTextColor: { attrName: "android:amPmTextColor" },
+  amPmBackgroundColor: { attrName: "android:amPmBackgroundColor" },
+  amPmSelectedBackgroundColor: { attrName: "android:amPmSelectedBackgroundColor" },
 };
 
 const DATE_PICKER_WIDGET_ALLOWED_ATTRIBUTES = {
   headerBackground: { attrName: "android:headerBackground" },
+  headerSelectedTextColor: { attrName: "android:headerSelectedTextColor" },
   calendarTextColor: { attrName: "android:calendarTextColor" },
+  calendarSelectedTextColor: { attrName: "android:calendarSelectedTextColor" },
   yearListSelectorColor: { attrName: "android:yearListSelectorColor" },
   dayOfWeekBackground: { attrName: "android:dayOfWeekBackground" },
 };

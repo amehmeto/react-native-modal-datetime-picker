@@ -391,24 +391,34 @@ export type DialogThemeConfig = {
   colorPrimary?: ThemedColor;
   colorControlActivated?: ThemedColor;
   colorControlHighlight?: ThemedColor;
+  colorControlNormal?: ThemedColor;
   windowBackground?: ThemedColor;
   textColor?: ThemedColor;
+  dialogCornerRadius?: ThemedColor;
   buttonBarPositiveButtonStyle?: ThemedColor;
+  buttonBarNegativeButtonStyle?: ThemedColor;
   parentTheme?: string;
 };
 
 export type TimePickerWidgetConfig = {
   background?: ThemedColor;
   headerBackground?: ThemedColor;
+  headerSelectedTextColor?: ThemedColor;
   numbersTextColor?: ThemedColor;
+  numbersInnerTextColor?: ThemedColor;
   numbersBackgroundColor?: ThemedColor;
   numbersSelectorColor?: ThemedColor;
+  amPmTextColor?: ThemedColor;
+  amPmBackgroundColor?: ThemedColor;
+  amPmSelectedBackgroundColor?: ThemedColor;
   parentTheme?: string;
 };
 
 export type DatePickerWidgetConfig = {
   headerBackground?: ThemedColor;
+  headerSelectedTextColor?: ThemedColor;
   calendarTextColor?: ThemedColor;
+  calendarSelectedTextColor?: ThemedColor;
   yearListSelectorColor?: ThemedColor;
   dayOfWeekBackground?: ThemedColor;
   parentTheme?: string;
