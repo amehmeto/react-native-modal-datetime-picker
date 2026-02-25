@@ -2,7 +2,7 @@
 
 const { withAndroidColors, withAndroidColorsNight, withAndroidStyles, AndroidConfig } = require("@expo/config-plugins");
 
-const { assignStylesValue, getAppThemeLightNoActionBarGroup } = AndroidConfig.Styles;
+const { assignStylesValue, getAppThemeGroup } = AndroidConfig.Styles;
 const { assignColorValue } = AndroidConfig.Colors;
 
 const moduleName = "ModalDateTimePicker: ";
@@ -142,7 +142,7 @@ const setAndroidPickerStyles = (styles, theme, pickerConfig) => {
 
   styles = assignStylesValue(styles, {
     add: true,
-    parent: getAppThemeLightNoActionBarGroup(),
+    parent: getAppThemeGroup(),
     name: themeAttribute,
     value: `@style/${styleName}`,
   });
