@@ -14,6 +14,7 @@ export default function App() {
         isVisible={isVisible}
         mode="time"
         is24Hour={true}
+        borderRadiusIOS={12}
         onConfirm={(date) => {
           console.log('Confirmed:', date)
           setIsVisible(false)
