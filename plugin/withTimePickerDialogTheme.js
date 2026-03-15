@@ -144,7 +144,7 @@ const writeRoundedDrawables = async (projectRoot, android) => {
       continue;
     }
     const radiusDp = getBorderRadiusDp(theme);
-    const drawableName = `${pickerConfig.attrPrefix}_rounded_bg`;
+    const drawableName = `${pickerConfig.attrPrefix.toLowerCase()}_rounded_bg`;
     const bgColor = theme.windowBackground;
 
     if (bgColor.light) {
@@ -192,7 +192,7 @@ const setAndroidPickerStyles = (styles, theme, pickerConfig) => {
         add: true,
         parent: { name: styleName, parent: parentTheme },
         name: attrName,
-        value: `@drawable/${attrPrefix}_rounded_bg`,
+        value: `@drawable/${attrPrefix.toLowerCase()}_rounded_bg`,
       });
     }
 
