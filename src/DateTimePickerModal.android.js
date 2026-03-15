@@ -11,11 +11,11 @@ const areEqual = (prevProps, nextProps) => {
 const DateTimePickerModal = memo(
   ({
     date = new Date(),
-    mode = 'date',
+    mode = "date",
     isVisible = false,
     onCancel,
     onConfirm,
-    onHide = () => { },
+    onHide = () => {},
     ...otherProps
   }) => {
     const currentDateRef = useRef(date);
@@ -23,7 +23,7 @@ const DateTimePickerModal = memo(
 
     useEffect(() => {
       if (isVisible && currentMode === null) {
-        setCurrentMode(mode === 'time' ? 'time' : 'date');
+        setCurrentMode(mode === "time" ? "time" : "date");
       } else if (!isVisible) {
         setCurrentMode(null);
       }
@@ -32,18 +32,18 @@ const DateTimePickerModal = memo(
     if (!isVisible || !currentMode) return null;
 
     const handleChange = (event, date) => {
-      if (event.type === 'dismissed') {
+      if (event.type === "dismissed") {
         onCancel();
         onHide(false);
         return;
       }
       let nextDate = date;
-      if (mode === 'datetime') {
-        if (currentMode === 'date') {
-          setCurrentMode('time');
+      if (mode === "datetime") {
+        if (currentMode === "date") {
+          setCurrentMode("time");
           currentDateRef.current = new Date(date);
           return;
-        } else if (currentMode === 'time') {
+        } else if (currentMode === "time") {
           const year = currentDateRef.current.getFullYear();
           const month = currentDateRef.current.getMonth();
           const day = currentDateRef.current.getDate();
@@ -65,7 +65,7 @@ const DateTimePickerModal = memo(
       />
     );
   },
-  areEqual
+  areEqual,
 );
 
 export default DateTimePickerModal;

@@ -239,7 +239,11 @@ export class DateTimePickerModal extends React.PureComponent {
             onPress={this.handleConfirm}
             label={confirmTextIOS}
             buttonTextColorIOS={buttonTextColorIOS}
-            borderColor={_isDarkModeEnabled ? (borderColorDarkIOS || borderColorIOS) : borderColorIOS}
+            borderColor={
+              _isDarkModeEnabled
+                ? borderColorDarkIOS || borderColorIOS
+                : borderColorIOS
+            }
             highlightColor={highlightColorIOS}
             buttonHeight={buttonHeightIOS}
             fontSize={buttonFontSizeIOS}
@@ -310,10 +314,11 @@ export const ConfirmButton = ({
     ? confirmButtonStyles.buttonDark
     : confirmButtonStyles.buttonLight;
 
-  const underlayColor = highlightColor ?? (isDarkModeEnabled
-    ? HIGHLIGHT_COLOR_DARK
-    : HIGHLIGHT_COLOR_LIGHT);
-  const heightStyle = buttonHeight != null ? { height: buttonHeight } : undefined;
+  const underlayColor =
+    highlightColor ??
+    (isDarkModeEnabled ? HIGHLIGHT_COLOR_DARK : HIGHLIGHT_COLOR_LIGHT);
+  const heightStyle =
+    buttonHeight != null ? { height: buttonHeight } : undefined;
   const borderOverride = borderColor ? { borderColor } : undefined;
   const textOverrides = {
     ...(fontSize != null && { fontSize }),
@@ -331,9 +336,7 @@ export const ConfirmButton = ({
       accessibilityRole="button"
       accessibilityLabel={label}
     >
-      <Text style={[style.text, textOverrides]}>
-        {label}
-      </Text>
+      <Text style={[style.text, textOverrides]}>{label}</Text>
     </TouchableHighlight>
   );
 };
@@ -393,10 +396,11 @@ export const CancelButton = ({
   const themedButtonStyle = isDarkModeEnabled
     ? cancelButtonStyles.buttonDark
     : cancelButtonStyles.buttonLight;
-  const underlayColor = highlightColor ?? (isDarkModeEnabled
-    ? HIGHLIGHT_COLOR_DARK
-    : HIGHLIGHT_COLOR_LIGHT);
-  const heightStyle = buttonHeight != null ? { height: buttonHeight } : undefined;
+  const underlayColor =
+    highlightColor ??
+    (isDarkModeEnabled ? HIGHLIGHT_COLOR_DARK : HIGHLIGHT_COLOR_LIGHT);
+  const heightStyle =
+    buttonHeight != null ? { height: buttonHeight } : undefined;
   const bgOverride = backgroundColor ? { backgroundColor } : undefined;
   const radiusOverride = borderRadius != null ? { borderRadius } : undefined;
   const textOverrides = {
@@ -408,16 +412,20 @@ export const CancelButton = ({
   return (
     <TouchableHighlight
       testID={cancelButtonTestID}
-      style={[themedButtonStyle, style.button, heightStyle, bgOverride, radiusOverride]}
+      style={[
+        themedButtonStyle,
+        style.button,
+        heightStyle,
+        bgOverride,
+        radiusOverride,
+      ]}
       underlayColor={underlayColor}
       onPress={onPress}
       accessible={true}
       accessibilityRole="button"
       accessibilityLabel={label}
     >
-      <Text style={[style.text, textOverrides]}>
-        {label}
-      </Text>
+      <Text style={[style.text, textOverrides]}>{label}</Text>
     </TouchableHighlight>
   );
 };
