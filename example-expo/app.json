@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "example-expo",
+    "slug": "example-expo",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "package": "com.example.datetimepicker"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "react-native-modal-datetime-picker",
+        {
+          "android": {
+            "timePickerDialog": {
+              "colorControlNormal": { "light": "#FFFFFF", "dark": "#FFFFFF" },
+              "colorAccent": { "light": "#00D4FF", "dark": "#00D4FF" },
+              "windowBackground": { "light": "#1E293B", "dark": "#1E293B" },
+              "textColor": { "light": "#FFFFFF", "dark": "#FFFFFF" },
+              "textColorPrimary": { "light": "#0C207A", "dark": "#0C207A" },
+              "textColorSecondary": { "light": "#0C207A", "dark": "#0C207A" }
+            }
+          }
+        }
+      ]
+    ]
+  }
+}

@@ -41,6 +41,7 @@
     "prop-types": "^15.7.2"
   },
   "devDependencies": {
+    "@expo/config-plugins": "^55.0.6",
     "@semantic-release/git": "^9.0.0",
     "eslint": "^7.11.0",
     "eslint-config-prettier": "^6.12.0",
@@ -52,9 +53,9 @@
     "semantic-release": "^17.1.2"
   },
   "peerDependencies": {
+    "@expo/config-plugins": ">=7.0.0",
     "@react-native-community/datetimepicker": ">=6.7.0",
-    "react-native": ">=0.65.0",
-    "@expo/config-plugins": ">=7.0.0"
+    "react-native": ">=0.65.0"
   },
   "peerDependenciesMeta": {
     "@expo/config-plugins": {

@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  android:
+    name: Android Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install library dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Install example dependencies
+        working-directory: ./example-expo
+        run: npm install
+
+      - name: Generate Android project (expo prebuild)
+        working-directory: ./example-expo
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Build example Android app (release)
+        working-directory: ./example-expo/android
+        run: ./gradlew assembleRelease
+
+      - name: Rename APK
+        run: |
+          mv example-expo/android/app/build/outputs/apk/release/app-release.apk \
+             example-expo/android/app/build/outputs/apk/release/datetime-picker-example.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: datetime-picker-example
+          path: example-expo/android/app/build/outputs/apk/release/datetime-picker-example.apk
+          retention-days: 30
+
+      - name: Create PR release
+        if: github.event_name == 'pull_request'
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: pr-${{ github.event.pull_request.number }}-build-${{ github.run_number }}
+          name: "DateTime Picker Example APK - PR #${{ github.event.pull_request.number }} (build ${{ github.run_number }})"
+          body: |
+            Automated build of the **DateTime Picker** example app for PR #${{ github.event.pull_request.number }}.
+
+            **Commit:** ${{ github.event.pull_request.head.sha }}
+            **Branch:** ${{ github.head_ref }}
+
+            Download the APK below to test the changes.
+          files: example-expo/android/app/build/outputs/apk/release/datetime-picker-example.apk
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify QA on Slack
+        if: github.event_name == 'pull_request' && success()
+        continue-on-error: true
+        env:
+          SLACK_QA_WEBHOOK_URL: ${{ secrets.SLACK_QA_WEBHOOK_URL }}
+        run: |
+          bash scripts/send-slack-notification.sh \
+            '${{ toJSON(github) }}' \
+            '${{ steps.create_release.outputs.url }}' \
+            '${{ steps.create_release.outputs.assets }}'
