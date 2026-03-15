@@ -52,6 +52,16 @@ jobs:
         working-directory: ./example-expo
         run: npx expo prebuild --platform android --no-install
 
+      - name: Verify generated Android theme
+        run: |
+          echo "=== Generated styles.xml ==="
+          cat example-expo/android/app/src/main/res/values/styles.xml
+          echo ""
+          echo "=== Checking for dialogCornerRadius ==="
+          grep -q "dialogCornerRadius" example-expo/android/app/src/main/res/values/styles.xml \
+            && echo "dialogCornerRadius found" \
+            || (echo "ERROR: dialogCornerRadius NOT found in generated theme" && exit 1)
+
       - name: Build example Android app (release)
         working-directory: ./example-expo/android
         run: ./gradlew assembleRelease
