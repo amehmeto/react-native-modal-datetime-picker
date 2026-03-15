@@ -19,6 +19,7 @@ const DIALOG_ALLOWED_ATTRIBUTES = {
   colorControlNormal: { attrName: "android:colorControlNormal" },
   windowBackground: { attrName: "android:windowBackground" },
   textColor: { attrName: "android:textColor" },
+  borderRadius: { attrName: "android:dialogCornerRadius", literal: true, numericDp: true },
   dialogCornerRadius: { attrName: "android:dialogCornerRadius", literal: true },
   buttonBarPositiveButtonStyle: { attrName: "buttonBarPositiveButtonStyle", literal: true },
   buttonBarNegativeButtonStyle: { attrName: "buttonBarNegativeButtonStyle", literal: true },
@@ -125,9 +126,10 @@ const setAndroidPickerStyles = (styles, theme, pickerConfig) => {
         `${moduleName}Invalid attribute name: ${userFacingAttrName}. Supported for ${pickerConfig.optionKey} are ${Object.keys(allowedAttributes).join(", ")}`
       );
     }
-    const { attrName, literal } = entry;
+    const { attrName, literal, numericDp } = entry;
+    const rawValue = theme[userFacingAttrName];
     const value = literal
-      ? theme[userFacingAttrName]
+      ? (numericDp ? `${rawValue}dp` : rawValue)
       : `@color/${attrPrefix}_${userFacingAttrName}`;
     return assignStylesValue(acc, {
       add: true,

@@ -400,7 +400,12 @@ export type DialogThemeConfig = {
   colorControlNormal?: ThemedColor;
   windowBackground?: ThemedColor;
   textColor?: ThemedColor;
-  /** Literal dimension value, e.g. "8dp". Requires API 28+. */
+  /** Border radius in dp (e.g. 12). Requires API 28+ (Android 9). */
+  borderRadius?: number;
+  /**
+   * Literal dimension value, e.g. "8dp". Requires API 28+.
+   * @deprecated Use `borderRadius` instead, which accepts a number in dp.
+   */
   dialogCornerRadius?: string;
   /** Literal style reference, e.g. "@style/MyPositiveButtonStyle" */
   buttonBarPositiveButtonStyle?: string;
