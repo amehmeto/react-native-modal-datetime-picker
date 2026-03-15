@@ -1,0 +1,5 @@
+# Block direct push to main/master
+sh .husky/scripts/no-direct-push-main-master.sh
+
+# Check for conflicts with main before pushing
+sh .husky/scripts/check-conflicts-with-main.sh
