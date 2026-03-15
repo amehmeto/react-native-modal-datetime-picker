@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "example-expo",
+    "name": "DateTimePicker Example",
     "slug": "example-expo",
     "version": "1.0.0",
     "orientation": "portrait",
