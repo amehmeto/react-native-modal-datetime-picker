@@ -48,7 +48,7 @@ export class Modal extends Component {
     }
     this._deviceEventEmitter = DeviceEventEmitter.addListener(
       "didUpdateDimensions",
-      this.handleDimensionsUpdate
+      this.handleDimensionsUpdate,
     );
   }
 
