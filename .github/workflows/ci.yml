@@ -61,6 +61,10 @@ jobs:
           grep -q "dialogCornerRadius" example-expo/android/app/src/main/res/values/styles.xml \
             && echo "dialogCornerRadius found" \
             || (echo "ERROR: dialogCornerRadius NOT found in generated theme" && exit 1)
+          echo "=== Checking for rounded drawable ==="
+          cat example-expo/android/app/src/main/res/drawable/timePickerDialog_rounded_bg.xml \
+            && echo "Rounded drawable found" \
+            || (echo "ERROR: Rounded drawable NOT generated" && exit 1)
 
       - name: Build example Android app (release)
         working-directory: ./example-expo/android

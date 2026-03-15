@@ -1,6 +1,8 @@
 "use strict";
 
-const { withAndroidColors, withAndroidColorsNight, withAndroidStyles, AndroidConfig } = require("@expo/config-plugins");
+const { withAndroidColors, withAndroidColorsNight, withAndroidStyles, withDangerousMod, AndroidConfig } = require("@expo/config-plugins");
+const { writeXMLAsync } = require("@expo/config-plugins/build/utils/XML");
+const path = require("path");
 
 const { assignStylesValue, getAppThemeGroup } = AndroidConfig.Styles;
 const { assignColorValue } = AndroidConfig.Colors;
@@ -108,6 +110,59 @@ const setAndroidColors = (colors, themedColorExtractor, theme, attrPrefix, allow
   }, colors);
 };
 
+const getBorderRadiusDp = (theme) => {
+  if (theme.borderRadius != null) {
+    return `${theme.borderRadius}dp`;
+  }
+  if (theme.dialogCornerRadius != null) {
+    return theme.dialogCornerRadius;
+  }
+  return null;
+};
+
+const needsRoundedDrawable = (theme) => {
+  return theme && theme.windowBackground && getBorderRadiusDp(theme) !== null;
+};
+
+const buildRoundedDrawableXml = (colorValue, radiusDp) => ({
+  shape: {
+    $: {
+      "xmlns:android": "http://schemas.android.com/apk/res/android",
+      "android:shape": "rectangle",
+    },
+    solid: [{ $: { "android:color": colorValue } }],
+    corners: [{ $: { "android:radius": radiusDp } }],
+  },
+});
+
+const writeRoundedDrawables = async (projectRoot, android) => {
+  const resourceFolder = path.join(projectRoot, "android", "app", "src", "main", "res");
+
+  for (const pickerConfig of PICKER_CONFIGS) {
+    const theme = android[pickerConfig.optionKey];
+    if (!needsRoundedDrawable(theme)) {
+      continue;
+    }
+    const radiusDp = getBorderRadiusDp(theme);
+    const drawableName = `${pickerConfig.attrPrefix}_rounded_bg`;
+    const bgColor = theme.windowBackground;
+
+    if (bgColor.light) {
+      await writeXMLAsync({
+        path: path.join(resourceFolder, "drawable", `${drawableName}.xml`),
+        xml: buildRoundedDrawableXml(bgColor.light, radiusDp),
+      });
+    }
+
+    if (bgColor.dark) {
+      await writeXMLAsync({
+        path: path.join(resourceFolder, "drawable-night", `${drawableName}.xml`),
+        xml: buildRoundedDrawableXml(bgColor.dark, radiusDp),
+      });
+    }
+  }
+};
+
 const setAndroidPickerStyles = (styles, theme, pickerConfig) => {
   if (!theme) {
     return styles;
@@ -115,6 +170,7 @@ const setAndroidPickerStyles = (styles, theme, pickerConfig) => {
 
   const { styleName, themeAttribute, defaultParentTheme, attrPrefix, allowedAttributes } = pickerConfig;
   const parentTheme = theme.parentTheme || defaultParentTheme;
+  const useRoundedDrawable = needsRoundedDrawable(theme);
 
   styles = Object.keys(theme).reduce((acc, userFacingAttrName) => {
     if (userFacingAttrName === "parentTheme") {
@@ -128,6 +184,18 @@ const setAndroidPickerStyles = (styles, theme, pickerConfig) => {
     }
     const { attrName, literal, numericDp } = entry;
     const rawValue = theme[userFacingAttrName];
+
+    // When borderRadius + windowBackground are both set, point windowBackground
+    // to the generated rounded drawable instead of the flat color resource.
+    if (useRoundedDrawable && userFacingAttrName === "windowBackground") {
+      return assignStylesValue(acc, {
+        add: true,
+        parent: { name: styleName, parent: parentTheme },
+        name: attrName,
+        value: `@drawable/${attrPrefix}_rounded_bg`,
+      });
+    }
+
     const value = literal
       ? (numericDp ? `${rawValue}dp` : rawValue)
       : `@color/${attrPrefix}_${userFacingAttrName}`;
@@ -179,6 +247,15 @@ const withTimePickerDialogTheme = (baseConfig, options = {}) => {
     }
     return config;
   });
+
+  // Generate rounded background drawables when borderRadius + windowBackground are both set.
+  newConfig = withDangerousMod(newConfig, [
+    "android",
+    async (config) => {
+      await writeRoundedDrawables(config.modRequest.projectRoot, android);
+      return config;
+    },
+  ]);
 
   return newConfig;
 };
