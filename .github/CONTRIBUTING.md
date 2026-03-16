@@ -1,7 +1,7 @@
 # Contributing to react-native-modal-datetime-picker
 
 Contribution to `react-native-modal-datetime-picker` are warmly welcome!  
-Before you start, please keep in mind that the goal of this library is to be as consistent as possible with the native behaviour/style guidelines, so **it's highly lickely that we won't accept contributions that introduce customization options that goes against the native guidelines**.  
+Before you start, please keep in mind that the goal of this library is to be as consistent as possible with the native behaviour/style guidelines, so **it's highly lickely that we won't accept contributions that introduce customization options that goes against the native guidelines**.
 
 ## Development Process
 
@@ -10,15 +10,16 @@ All work on React Native Modal Datetime Picker happens directly on GitHub. Contr
 > **Working on your first pull request?** You can learn how from this _free_ series: [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github).
 
 1. Fork the repo and create your branch from `master` (a guide on [how to fork a repository](https://help.github.com/articles/fork-a-repo/)).
-2. Run `yarn` to install all required dependencies.
+2. Run `npm install` to install all required dependencies.
 3. Now you are ready to make your changes!
 
 ## Tests & Verifications
 
-Currently we use `eslint` with `prettier` for linting and formatting the code. They are run on CircleCI for all opened pull requests, but you should use them locally when making changes.
+We use `oxlint` for linting and `prettier` for formatting. They are run in CI for all opened pull requests, but you should use them locally when making changes.
 
-- `yarn lint`: Run `eslint`.
-- `yarn lint --fix`: Run `eslint` and automatically fix issues. This is useful for correcting code formatting.
+- `npm run lint`: Run `oxlint`.
+- `npm run lint:fix`: Run `oxlint` with auto-fix.
+- `npm test`: Run linting, type-checking, and tests (Vitest).
 
 ## Sending a pull request
 
