@@ -45,7 +45,7 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: Build plugin
-        run: yarn build:plugin
+        run: npm run build:plugin
 
       - name: Install example dependencies
         working-directory: ./example-expo

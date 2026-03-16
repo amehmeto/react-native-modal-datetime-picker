@@ -29,14 +29,14 @@
   "scripts": {
     "prepare": "husky",
     "build:plugin": "tsc -p plugin/tsconfig.json",
-    "prepublishOnly": "yarn build:plugin",
+    "prepublishOnly": "npm run build:plugin",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
-    "lint:fix": "yarn lint --fix",
-    "test": "yarn build:plugin && yarn typecheck && jest",
-    "release": "yarn semantic-release",
-    "example:setup": "cd example && yarn setup",
-    "example:copy": "cd example && yarn copy",
+    "lint:fix": "npm run lint -- --fix",
+    "test": "npm run build:plugin && npm run typecheck && jest",
+    "release": "npx semantic-release",
+    "example:setup": "cd example && npm install",
+    "example:copy": "cd example && npm run copy",
     "example:android": "cd example && react-native run-android",
     "example:ios": "cd example && react-native run-ios"
   },
@@ -65,7 +65,7 @@
     "prettier": "^3.8.1",
     "semantic-release": "^17.1.2",
     "ts-jest": "^29.4.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.8.3"
   },
   "peerDependencies": {
     "@expo/config-plugins": ">=7.0.0",
