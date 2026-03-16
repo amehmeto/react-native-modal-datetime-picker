@@ -6,6 +6,10 @@
     "outDir": "./build",
     "rootDir": "./src",
     "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "declaration": true
