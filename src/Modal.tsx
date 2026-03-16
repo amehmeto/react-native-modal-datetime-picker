@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from "react"
 import {
   Animated,
   DeviceEventEmitter,
@@ -9,27 +9,27 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   ViewStyle,
-} from "react-native";
+} from "react-native"
 
-const MODAL_ANIM_DURATION = 300;
-const MODAL_BACKDROP_OPACITY = 0.6;
+const MODAL_ANIM_DURATION = 300
+const MODAL_BACKDROP_OPACITY = 0.6
 
 interface ModalProps {
-  onBackdropPress?: () => void;
-  onHide?: () => void;
-  isVisible?: boolean;
-  contentStyle?: ViewStyle | (ViewStyle | undefined)[];
-  backdropStyle?: ViewStyle;
-  backdropOpacity?: number;
-  backdropColor?: string;
-  animationDuration?: number;
-  children?: React.ReactNode;
+  onBackdropPress?: () => void
+  onHide?: () => void
+  isVisible?: boolean
+  contentStyle?: ViewStyle | (ViewStyle | undefined)[]
+  backdropStyle?: ViewStyle
+  backdropOpacity?: number
+  backdropColor?: string
+  animationDuration?: number
+  children?: React.ReactNode
 }
 
 interface ModalState {
-  isVisible: boolean;
-  deviceWidth: number;
-  deviceHeight: number;
+  isVisible: boolean
+  deviceWidth: number
+  deviceHeight: number
 }
 
 export class Modal extends Component<ModalProps, ModalState> {
@@ -37,64 +37,64 @@ export class Modal extends Component<ModalProps, ModalState> {
     onBackdropPress: () => null,
     onHide: () => null,
     isVisible: false,
-  };
+  }
 
   state: ModalState = {
     isVisible: this.props.isVisible ?? false,
     deviceWidth: Dimensions.get("window").width,
     deviceHeight: Dimensions.get("window").height,
-  };
+  }
 
-  animVal = new Animated.Value(0);
-  _isMounted = false;
-  _deviceEventEmitter: EmitterSubscription | null = null;
+  animVal = new Animated.Value(0)
+  _isMounted = false
+  _deviceEventEmitter: EmitterSubscription | null = null
 
   componentDidMount() {
-    this._isMounted = true;
+    this._isMounted = true
     if (this.state.isVisible) {
-      this.show();
+      this.show()
     }
     this._deviceEventEmitter = DeviceEventEmitter.addListener(
       "didUpdateDimensions",
       this.handleDimensionsUpdate,
-    );
+    )
   }
 
   componentWillUnmount() {
-    this._deviceEventEmitter?.remove();
-    this._isMounted = false;
+    this._deviceEventEmitter?.remove()
+    this._isMounted = false
   }
 
   componentDidUpdate(prevProps: ModalProps) {
     if (this.props.isVisible && !prevProps.isVisible) {
-      this.show();
+      this.show()
     } else if (!this.props.isVisible && prevProps.isVisible) {
-      this.hide();
+      this.hide()
     }
   }
 
   handleDimensionsUpdate = (dimensionsUpdate: {
-    window: { width: number; height: number };
+    window: { width: number; height: number }
   }) => {
-    const deviceWidth = dimensionsUpdate.window.width;
-    const deviceHeight = dimensionsUpdate.window.height;
+    const deviceWidth = dimensionsUpdate.window.width
+    const deviceHeight = dimensionsUpdate.window.height
     if (
       deviceWidth !== this.state.deviceWidth ||
       deviceHeight !== this.state.deviceHeight
     ) {
-      this.setState({ deviceWidth, deviceHeight });
+      this.setState({ deviceWidth, deviceHeight })
     }
-  };
+  }
 
   show = () => {
-    this.setState({ isVisible: true });
+    this.setState({ isVisible: true })
     Animated.timing(this.animVal, {
       easing: Easing.inOut(Easing.quad),
       useNativeDriver: false,
       duration: this.props.animationDuration ?? MODAL_ANIM_DURATION,
       toValue: 1,
-    }).start();
-  };
+    }).start()
+  }
 
   hide = () => {
     Animated.timing(this.animVal, {
@@ -104,10 +104,10 @@ export class Modal extends Component<ModalProps, ModalState> {
       toValue: 0,
     }).start(() => {
       if (this._isMounted) {
-        this.setState({ isVisible: false }, this.props.onHide);
+        this.setState({ isVisible: false }, this.props.onHide)
       }
-    });
-  };
+    })
+  }
 
   render() {
     const {
@@ -119,14 +119,14 @@ export class Modal extends Component<ModalProps, ModalState> {
       backdropColor,
       animationDuration: _animationDuration,
       ...otherProps
-    } = this.props;
-    const { deviceHeight, deviceWidth, isVisible } = this.state;
+    } = this.props
+    const { deviceHeight, deviceWidth, isVisible } = this.state
     const backdropAnimatedStyle = {
       opacity: this.animVal.interpolate({
         inputRange: [0, 1],
         outputRange: [0, backdropOpacity ?? MODAL_BACKDROP_OPACITY],
       }),
-    };
+    }
     const contentAnimatedStyle = {
       transform: [
         {
@@ -137,7 +137,7 @@ export class Modal extends Component<ModalProps, ModalState> {
           }),
         },
       ],
-    };
+    }
     return (
       <ReactNativeModal
         transparent
@@ -165,7 +165,7 @@ export class Modal extends Component<ModalProps, ModalState> {
           </Animated.View>
         )}
       </ReactNativeModal>
-    );
+    )
   }
 }
 
@@ -183,6 +183,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
   },
-});
+})
 
-export default Modal;
+export default Modal

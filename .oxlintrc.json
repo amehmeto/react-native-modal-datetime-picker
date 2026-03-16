@@ -24,7 +24,7 @@
     "typescript/restrict-template-expressions": "off",
     "typescript/no-floating-promises": "off",
     "typescript/unbound-method": "off",
-    "unicorn/no-nested-ternary": "off",
+    "unicorn/no-nested-ternary": "off", // off to avoid double-reporting with core no-nested-ternary
     "unicorn/no-thenable": "off",
     "unicorn/prefer-ternary": "error",
     "import/no-duplicates": "error",
