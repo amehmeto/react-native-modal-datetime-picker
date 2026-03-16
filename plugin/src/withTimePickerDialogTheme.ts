@@ -1,10 +1,10 @@
 import {
+  AndroidConfig,
+  ConfigPlugin,
   withAndroidColors,
   withAndroidColorsNight,
   withAndroidStyles,
   withDangerousMod,
-  AndroidConfig,
-  ConfigPlugin,
 } from "@expo/config-plugins";
 import { writeXMLAsync } from "@expo/config-plugins/build/utils/XML";
 import fs from "fs";
@@ -222,7 +222,7 @@ const setAndroidColors = (
 };
 
 export const getBorderRadiusDp = (theme: ThemeConfig): string | null => {
-  if (theme.borderRadius == null) {
+  if (theme.borderRadius === null || theme.borderRadius === undefined) {
     return null;
   }
   if (typeof theme.borderRadius !== "number" || theme.borderRadius < 0) {
@@ -344,11 +344,12 @@ export const setAndroidPickerStyles = (
       continue;
     }
 
-    const value = literal
-      ? numericDp
-        ? `${rawValue}dp`
-        : String(rawValue)
-      : `@color/${attrPrefix}_${userFacingAttrName}`;
+    let value: string;
+    if (literal) {
+      value = numericDp ? `${rawValue}dp` : String(rawValue);
+    } else {
+      value = `@color/${attrPrefix}_${userFacingAttrName}`;
+    }
     result = applyStylesValue(result, {
       add: true,
       parent: {

@@ -1,15 +1,11 @@
 import {
+  PICKER_CONFIGS,
+  buildRoundedDrawableXml,
   getBorderRadiusDp,
   needsRoundedDrawable,
-  buildRoundedDrawableXml,
   setAndroidPickerStyles,
-  PICKER_CONFIGS,
 } from "../withTimePickerDialogTheme";
-import type {
-  ThemeConfig,
-  PickerConfig,
-  StylesXml,
-} from "../withTimePickerDialogTheme";
+import type { PickerConfig, StylesXml } from "../withTimePickerDialogTheme";
 import { AndroidConfig } from "@expo/config-plugins";
 
 const { assignStylesValue } = AndroidConfig.Styles;
@@ -93,7 +89,7 @@ describe("needsRoundedDrawable", () => {
 describe("buildRoundedDrawableXml", () => {
   it("builds correct XML structure", () => {
     const result = buildRoundedDrawableXml("#1E293B", "12dp");
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       shape: {
         $: {
           "xmlns:android": "http://schemas.android.com/apk/res/android",

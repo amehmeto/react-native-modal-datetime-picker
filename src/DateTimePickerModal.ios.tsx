@@ -1,16 +1,16 @@
 import React from "react";
 import {
+  Appearance,
   StyleSheet,
   Text,
   TextStyle,
   TouchableHighlight,
   View,
-  Appearance,
   ViewStyle,
 } from "react-native";
 import DateTimePicker, {
-  IOSNativeProps,
   DateTimePickerEvent,
+  IOSNativeProps,
 } from "@react-native-community/datetimepicker";
 import Modal from "./Modal";
 import { isIphoneX } from "./utils";
@@ -193,7 +193,8 @@ export class DateTimePickerModal extends React.PureComponent<
       : pickerStyles.containerLight;
     const containerOverrides = {
       ...(backgroundColorIOS && { backgroundColor: backgroundColorIOS }),
-      ...(borderRadiusIOS != null && { borderRadius: borderRadiusIOS }),
+      ...(borderRadiusIOS !== null &&
+        borderRadiusIOS !== undefined && { borderRadius: borderRadiusIOS }),
     };
 
     return (
@@ -349,10 +350,12 @@ export const ConfirmButton: React.FC<ConfirmButtonProps> = ({
     highlightColor ??
     (isDarkModeEnabled ? HIGHLIGHT_COLOR_DARK : HIGHLIGHT_COLOR_LIGHT);
   const heightStyle =
-    buttonHeight != null ? { height: buttonHeight } : undefined;
+    buttonHeight !== null && buttonHeight !== undefined
+      ? { height: buttonHeight }
+      : undefined;
   const borderOverride = borderColor ? { borderColor } : undefined;
   const textOverrides = {
-    ...(fontSize != null && { fontSize }),
+    ...(fontSize !== null && fontSize !== undefined && { fontSize }),
     ...(fontFamily && { fontFamily }),
     ...(fontWeight && { fontWeight }),
     ...(buttonTextColorIOS && { color: buttonTextColorIOS }),
@@ -433,11 +436,16 @@ export const CancelButton: React.FC<CancelButtonProps> = ({
     highlightColor ??
     (isDarkModeEnabled ? HIGHLIGHT_COLOR_DARK : HIGHLIGHT_COLOR_LIGHT);
   const heightStyle =
-    buttonHeight != null ? { height: buttonHeight } : undefined;
+    buttonHeight !== null && buttonHeight !== undefined
+      ? { height: buttonHeight }
+      : undefined;
   const bgOverride = backgroundColor ? { backgroundColor } : undefined;
-  const radiusOverride = borderRadius != null ? { borderRadius } : undefined;
+  const radiusOverride =
+    borderRadius !== null && borderRadius !== undefined
+      ? { borderRadius }
+      : undefined;
   const textOverrides = {
-    ...(fontSize != null && { fontSize }),
+    ...(fontSize !== null && fontSize !== undefined && { fontSize }),
     ...(fontFamily && { fontFamily }),
     ...(fontWeight && { fontWeight }),
     ...(buttonTextColorIOS && { color: buttonTextColorIOS }),

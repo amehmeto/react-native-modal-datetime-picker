@@ -1,5 +1,7 @@
 import { Dimensions, Platform } from "react-native";
 
+const IPHONE_X_DIMENSIONS = new Set([780, 812, 844, 852, 896, 926, 932]);
+
 export const isIphoneX = () => {
   const { height, width } = Dimensions.get("window");
 
@@ -7,19 +9,6 @@ export const isIphoneX = () => {
     Platform.OS === "ios" &&
     !Platform.isPad &&
     !Platform.isTV &&
-    (height === 780 ||
-      width === 780 ||
-      height === 812 ||
-      width === 812 ||
-      height === 844 ||
-      width === 844 ||
-      height === 852 ||
-      width === 852 ||
-      height === 896 ||
-      width === 896 ||
-      height === 926 ||
-      width === 926 ||
-      height === 932 ||
-      width === 932)
+    (IPHONE_X_DIMENSIONS.has(height) || IPHONE_X_DIMENSIONS.has(width))
   );
 };
