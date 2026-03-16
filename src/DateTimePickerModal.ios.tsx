@@ -1,13 +1,17 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {
   StyleSheet,
   Text,
+  TextStyle,
   TouchableHighlight,
   View,
   Appearance,
+  ViewStyle,
 } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker, {
+  IOSNativeProps,
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 import Modal from "./Modal";
 import { isIphoneX } from "./utils";
 
@@ -16,54 +20,63 @@ export const BACKGROUND_COLOR_DARK = "#16213E";
 export const BORDER_COLOR = "#d5d5d5";
 export const BORDER_COLOR_DARK = "#222E47";
 export const BORDER_RADIUS = 20;
-export const BUTTON_FONT_WEIGHT = "normal";
+export const BUTTON_FONT_WEIGHT = "normal" as const;
 export const BUTTON_FONT_COLOR = "#38BDF8";
 export const BUTTON_FONT_SIZE = 20;
 export const HIGHLIGHT_COLOR_DARK = "#1C2D52";
 export const HIGHLIGHT_COLOR_LIGHT = "#ebebeb";
 
-export class DateTimePickerModal extends React.PureComponent {
-  static propTypes = {
-    buttonTextColorIOS: PropTypes.string,
-    cancelButtonTestID: PropTypes.string,
-    confirmButtonTestID: PropTypes.string,
-    cancelTextIOS: PropTypes.string,
-    confirmTextIOS: PropTypes.string,
-    customCancelButtonIOS: PropTypes.elementType,
-    customConfirmButtonIOS: PropTypes.elementType,
-    customHeaderIOS: PropTypes.elementType,
-    customPickerIOS: PropTypes.elementType,
-    date: PropTypes.instanceOf(Date),
-    modalPropsIOS: PropTypes.any,
-    modalStyleIOS: PropTypes.any,
-    isDarkModeEnabled: PropTypes.bool,
-    isVisible: PropTypes.bool,
-    pickerContainerStyleIOS: PropTypes.any,
-    pickerStyleIOS: PropTypes.any,
-    backdropStyleIOS: PropTypes.any,
-    pickerComponentStyleIOS: PropTypes.any,
-    onCancel: PropTypes.func.isRequired,
-    onConfirm: PropTypes.func.isRequired,
-    onChange: PropTypes.func,
-    onHide: PropTypes.func,
-    maximumDate: PropTypes.instanceOf(Date),
-    minimumDate: PropTypes.instanceOf(Date),
-    backgroundColorIOS: PropTypes.string,
-    borderColorIOS: PropTypes.string,
-    borderColorDarkIOS: PropTypes.string,
-    borderRadiusIOS: PropTypes.number,
-    buttonFontSizeIOS: PropTypes.number,
-    buttonHeightIOS: PropTypes.number,
-    confirmButtonFontFamilyIOS: PropTypes.string,
-    cancelButtonFontFamilyIOS: PropTypes.string,
-    confirmButtonFontWeightIOS: PropTypes.string,
-    cancelButtonFontWeightIOS: PropTypes.string,
-    highlightColorIOS: PropTypes.string,
-    backdropOpacityIOS: PropTypes.number,
-    backdropColorIOS: PropTypes.string,
-    animationDurationIOS: PropTypes.number,
-  };
+interface DateTimePickerModalProps extends Omit<
+  IOSNativeProps,
+  "value" | "onChange"
+> {
+  buttonTextColorIOS?: string;
+  cancelButtonTestID?: string;
+  confirmButtonTestID?: string;
+  cancelTextIOS?: string;
+  confirmTextIOS?: string;
+  customCancelButtonIOS?: React.ComponentType<CancelButtonProps>;
+  customConfirmButtonIOS?: React.ComponentType<ConfirmButtonProps>;
+  customHeaderIOS?: React.ComponentType;
+  customPickerIOS?: React.ComponentType<IOSNativeProps>;
+  date?: Date;
+  modalPropsIOS?: Record<string, unknown>;
+  modalStyleIOS?: ViewStyle;
+  isDarkModeEnabled?: boolean;
+  isVisible?: boolean;
+  pickerContainerStyleIOS?: ViewStyle;
+  pickerStyleIOS?: ViewStyle;
+  backdropStyleIOS?: ViewStyle;
+  pickerComponentStyleIOS?: ViewStyle;
+  onCancel: () => void;
+  onConfirm: (date: Date) => void;
+  onChange?: (date: Date) => void;
+  onHide?: (confirmed: boolean, date: Date) => void;
+  backgroundColorIOS?: string;
+  borderColorIOS?: string;
+  borderColorDarkIOS?: string;
+  borderRadiusIOS?: number;
+  buttonFontSizeIOS?: number;
+  buttonHeightIOS?: number;
+  confirmButtonFontFamilyIOS?: string;
+  cancelButtonFontFamilyIOS?: string;
+  confirmButtonFontWeightIOS?: TextStyle["fontWeight"];
+  cancelButtonFontWeightIOS?: TextStyle["fontWeight"];
+  highlightColorIOS?: string;
+  backdropOpacityIOS?: number;
+  backdropColorIOS?: string;
+  animationDurationIOS?: number;
+}
 
+interface DateTimePickerModalState {
+  currentDate: Date;
+  isPickerVisible: boolean;
+}
+
+export class DateTimePickerModal extends React.PureComponent<
+  DateTimePickerModalProps,
+  DateTimePickerModalState
+> {
   static defaultProps = {
     cancelTextIOS: "Cancel",
     confirmTextIOS: "Confirm",
@@ -77,14 +90,17 @@ export class DateTimePickerModal extends React.PureComponent {
     pickerComponentStyleIOS: {},
   };
 
-  state = {
-    currentDate: this.props.date,
-    isPickerVisible: this.props.isVisible,
+  state: DateTimePickerModalState = {
+    currentDate: this.props.date ?? new Date(),
+    isPickerVisible: this.props.isVisible ?? false,
   };
 
   didPressConfirm = false;
 
-  static getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps(
+    props: DateTimePickerModalProps,
+    state: DateTimePickerModalState,
+  ) {
     if (props.isVisible && !state.isPickerVisible) {
       return { currentDate: props.date, isPickerVisible: true };
     }
@@ -109,11 +125,13 @@ export class DateTimePickerModal extends React.PureComponent {
     this.setState({ isPickerVisible: false });
   };
 
-  handleChange = (event, date) => {
-    if (this.props.onChange) {
+  handleChange = (_event: DateTimePickerEvent, date?: Date) => {
+    if (this.props.onChange && date) {
       this.props.onChange(date);
     }
-    this.setState({ currentDate: date });
+    if (date) {
+      this.setState({ currentDate: date });
+    }
   };
 
   render() {
@@ -126,7 +144,7 @@ export class DateTimePickerModal extends React.PureComponent {
       customConfirmButtonIOS,
       customHeaderIOS,
       customPickerIOS,
-      date,
+      date: _date,
       display,
       isDarkModeEnabled,
       isVisible,
@@ -135,10 +153,10 @@ export class DateTimePickerModal extends React.PureComponent {
       pickerContainerStyleIOS,
       pickerStyleIOS,
       pickerComponentStyleIOS,
-      onCancel,
-      onConfirm,
-      onChange,
-      onHide,
+      onCancel: _onCancel,
+      onConfirm: _onConfirm,
+      onChange: _onChange,
+      onHide: _onHide,
       backdropStyleIOS,
       buttonTextColorIOS,
       backgroundColorIOS,
@@ -215,11 +233,8 @@ export class DateTimePickerModal extends React.PureComponent {
               {...otherProps}
               value={this.state.currentDate}
               onChange={this.handleChange}
-              // Recent versions @react-native-community/datetimepicker (at least starting with 6.7.0)
-              // have a peculiar iOS behaviour where sometimes, for example in react-native Modal,
-              // the inline picker is not rendered correctly if in datetime mode. Explicitly setting the height
-              // of the native picker to 370 fixes this issue. This is dependent on the other styles applied to the picker
-              // and may need to be adjusted if the other styles are changed.
+              // Workaround: inline datetime picker in a Modal sometimes renders
+              // incorrectly without an explicit height (seen since datetimepicker 6.7.0).
               style={[
                 {
                   height:
@@ -237,7 +252,7 @@ export class DateTimePickerModal extends React.PureComponent {
             confirmButtonTestID={confirmButtonTestID}
             isDarkModeEnabled={_isDarkModeEnabled}
             onPress={this.handleConfirm}
-            label={confirmTextIOS}
+            label={confirmTextIOS!}
             buttonTextColorIOS={buttonTextColorIOS}
             borderColor={
               _isDarkModeEnabled
@@ -255,7 +270,7 @@ export class DateTimePickerModal extends React.PureComponent {
           cancelButtonTestID={cancelButtonTestID}
           isDarkModeEnabled={_isDarkModeEnabled}
           onPress={this.handleCancel}
-          label={cancelTextIOS}
+          label={cancelTextIOS!}
           buttonTextColorIOS={buttonTextColorIOS}
           backgroundColor={backgroundColorIOS}
           borderRadius={borderRadiusIOS}
@@ -288,6 +303,7 @@ const pickerStyles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingTop: 14,
   },
+  headerFiller: {},
   containerLight: {
     backgroundColor: BACKGROUND_COLOR_LIGHT,
   },
@@ -296,7 +312,22 @@ const pickerStyles = StyleSheet.create({
   },
 });
 
-export const ConfirmButton = ({
+export interface ConfirmButtonProps {
+  isDarkModeEnabled?: boolean;
+  confirmButtonTestID?: string;
+  onPress: () => void;
+  label: string;
+  buttonTextColorIOS?: string;
+  borderColor?: string;
+  highlightColor?: string;
+  buttonHeight?: number;
+  fontSize?: number;
+  fontFamily?: string;
+  fontWeight?: TextStyle["fontWeight"];
+  style?: typeof confirmButtonStyles;
+}
+
+export const ConfirmButton: React.FC<ConfirmButtonProps> = ({
   isDarkModeEnabled,
   confirmButtonTestID,
   onPress,
@@ -341,20 +372,6 @@ export const ConfirmButton = ({
   );
 };
 
-ConfirmButton.propTypes = {
-  isDarkModeEnabled: PropTypes.bool,
-  confirmButtonTestID: PropTypes.string,
-  onPress: PropTypes.func.isRequired,
-  label: PropTypes.string.isRequired,
-  buttonTextColorIOS: PropTypes.string,
-  borderColor: PropTypes.string,
-  highlightColor: PropTypes.string,
-  buttonHeight: PropTypes.number,
-  fontSize: PropTypes.number,
-  fontFamily: PropTypes.string,
-  fontWeight: PropTypes.string,
-};
-
 export const confirmButtonStyles = StyleSheet.create({
   button: {
     borderTopWidth: StyleSheet.hairlineWidth,
@@ -378,7 +395,23 @@ export const confirmButtonStyles = StyleSheet.create({
   },
 });
 
-export const CancelButton = ({
+export interface CancelButtonProps {
+  cancelButtonTestID?: string;
+  isDarkModeEnabled?: boolean;
+  onPress: () => void;
+  label: string;
+  buttonTextColorIOS?: string;
+  backgroundColor?: string;
+  borderRadius?: number;
+  highlightColor?: string;
+  buttonHeight?: number;
+  fontSize?: number;
+  fontFamily?: string;
+  fontWeight?: TextStyle["fontWeight"];
+  style?: typeof cancelButtonStyles;
+}
+
+export const CancelButton: React.FC<CancelButtonProps> = ({
   cancelButtonTestID,
   isDarkModeEnabled,
   onPress,
@@ -428,21 +461,6 @@ export const CancelButton = ({
       <Text style={[style.text, textOverrides]}>{label}</Text>
     </TouchableHighlight>
   );
-};
-
-CancelButton.propTypes = {
-  cancelButtonTestID: PropTypes.string,
-  isDarkModeEnabled: PropTypes.bool,
-  onPress: PropTypes.func.isRequired,
-  label: PropTypes.string.isRequired,
-  buttonTextColorIOS: PropTypes.string,
-  backgroundColor: PropTypes.string,
-  borderRadius: PropTypes.number,
-  highlightColor: PropTypes.string,
-  buttonHeight: PropTypes.number,
-  fontSize: PropTypes.number,
-  fontFamily: PropTypes.string,
-  fontWeight: PropTypes.string,
 };
 
 export const cancelButtonStyles = StyleSheet.create({

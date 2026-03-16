@@ -1,45 +1,53 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import {
   Animated,
   DeviceEventEmitter,
   Dimensions,
   Easing,
+  EmitterSubscription,
   Modal as ReactNativeModal,
   StyleSheet,
   TouchableWithoutFeedback,
+  ViewStyle,
 } from "react-native";
 
 const MODAL_ANIM_DURATION = 300;
 const MODAL_BACKDROP_OPACITY = 0.6;
 
-export class Modal extends Component {
-  static propTypes = {
-    onBackdropPress: PropTypes.func,
-    onHide: PropTypes.func,
-    isVisible: PropTypes.bool,
-    contentStyle: PropTypes.any,
-    backdropOpacity: PropTypes.number,
-    backdropColor: PropTypes.string,
-    animationDuration: PropTypes.number,
-  };
+interface ModalProps {
+  onBackdropPress?: () => void;
+  onHide?: () => void;
+  isVisible?: boolean;
+  contentStyle?: ViewStyle | (ViewStyle | undefined)[];
+  backdropStyle?: ViewStyle;
+  backdropOpacity?: number;
+  backdropColor?: string;
+  animationDuration?: number;
+  children?: React.ReactNode;
+}
 
+interface ModalState {
+  isVisible: boolean;
+  deviceWidth: number;
+  deviceHeight: number;
+}
+
+export class Modal extends Component<ModalProps, ModalState> {
   static defaultProps = {
     onBackdropPress: () => null,
     onHide: () => null,
     isVisible: false,
   };
 
-  state = {
-    isVisible: this.props.isVisible,
+  state: ModalState = {
+    isVisible: this.props.isVisible ?? false,
     deviceWidth: Dimensions.get("window").width,
     deviceHeight: Dimensions.get("window").height,
   };
 
   animVal = new Animated.Value(0);
   _isMounted = false;
-
-  static _deviceEventEmitter = null;
+  _deviceEventEmitter: EmitterSubscription | null = null;
 
   componentDidMount() {
     this._isMounted = true;
@@ -53,11 +61,11 @@ export class Modal extends Component {
   }
 
   componentWillUnmount() {
-    this._deviceEventEmitter.remove();
+    this._deviceEventEmitter?.remove();
     this._isMounted = false;
   }
 
-  componentDidUpdate(prevProps: ModalPropsType) {
+  componentDidUpdate(prevProps: ModalProps) {
     if (this.props.isVisible && !prevProps.isVisible) {
       this.show();
     } else if (!this.props.isVisible && prevProps.isVisible) {
@@ -65,7 +73,9 @@ export class Modal extends Component {
     }
   }
 
-  handleDimensionsUpdate = (dimensionsUpdate) => {
+  handleDimensionsUpdate = (dimensionsUpdate: {
+    window: { width: number; height: number };
+  }) => {
     const deviceWidth = dimensionsUpdate.window.width;
     const deviceHeight = dimensionsUpdate.window.height;
     if (
@@ -80,7 +90,6 @@ export class Modal extends Component {
     this.setState({ isVisible: true });
     Animated.timing(this.animVal, {
       easing: Easing.inOut(Easing.quad),
-      // Using native driver in the modal makes the content flash
       useNativeDriver: false,
       duration: this.props.animationDuration ?? MODAL_ANIM_DURATION,
       toValue: 1,
@@ -90,7 +99,6 @@ export class Modal extends Component {
   hide = () => {
     Animated.timing(this.animVal, {
       easing: Easing.inOut(Easing.quad),
-      // Using native driver in the modal makes the content flash
       useNativeDriver: false,
       duration: this.props.animationDuration ?? MODAL_ANIM_DURATION,
       toValue: 0,
@@ -109,7 +117,7 @@ export class Modal extends Component {
       backdropStyle,
       backdropOpacity,
       backdropColor,
-      animationDuration,
+      animationDuration: _animationDuration,
       ...otherProps
     } = this.props;
     const { deviceHeight, deviceWidth, isVisible } = this.state;
@@ -143,7 +151,7 @@ export class Modal extends Component {
               styles.backdrop,
               backdropAnimatedStyle,
               { width: deviceWidth, height: deviceHeight },
-              backdropColor && { backgroundColor: backdropColor },
+              backdropColor ? { backgroundColor: backdropColor } : undefined,
               backdropStyle,
             ]}
           />
@@ -162,13 +170,6 @@ export class Modal extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
   backdrop: {
     position: "absolute",
     top: 0,

@@ -6,7 +6,7 @@ export const isIphoneX = () => {
   return (
     Platform.OS === "ios" &&
     !Platform.isPad &&
-    !Platform.isTVOS &&
+    !Platform.isTV &&
     (height === 780 ||
       width === 780 ||
       height === 812 ||
