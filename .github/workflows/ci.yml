@@ -44,6 +44,9 @@ jobs:
       - name: Install library dependencies
         run: npm install --legacy-peer-deps
 
+      - name: Build plugin
+        run: yarn build:plugin
+
       - name: Install example dependencies
         working-directory: ./example-expo
         run: npm install
@@ -51,6 +54,20 @@ jobs:
       - name: Generate Android project (expo prebuild)
         working-directory: ./example-expo
         run: npx expo prebuild --platform android --no-install
+
+      - name: Verify generated Android theme
+        run: |
+          echo "=== Generated styles.xml ==="
+          cat example-expo/android/app/src/main/res/values/styles.xml
+          echo ""
+          echo "=== Checking for dialogCornerRadius ==="
+          grep -q "dialogCornerRadius" example-expo/android/app/src/main/res/values/styles.xml \
+            && echo "dialogCornerRadius found" \
+            || (echo "ERROR: dialogCornerRadius NOT found in generated theme" && exit 1)
+          echo "=== Checking for rounded drawable ==="
+          cat example-expo/android/app/src/main/res/drawable/timepickerdialog_rounded_bg.xml \
+            && echo "Rounded drawable found" \
+            || (echo "ERROR: Rounded drawable NOT generated" && exit 1)
 
       - name: Build example Android app (release)
         working-directory: ./example-expo/android

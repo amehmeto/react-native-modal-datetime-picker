@@ -6,7 +6,8 @@
   "files": [
     "src/",
     "typings/",
-    "plugin/",
+    "plugin/build/",
+    "plugin/src/",
     "app.plugin.js"
   ],
   "typings": "typings/index.d.ts",
@@ -29,9 +30,11 @@
   },
   "scripts": {
     "prepare": "husky",
+    "build:plugin": "tsc -p plugin/tsconfig.json",
+    "prepublishOnly": "yarn build:plugin",
     "lint": "eslint src",
     "lint:fix": "yarn lint --fix",
-    "test": "yarn run lint",
+    "test": "yarn build:plugin && yarn run lint && jest",
     "release": "yarn semantic-release",
     "example:setup": "cd example && yarn setup",
     "example:copy": "cd example && yarn copy",
@@ -49,15 +52,20 @@
     "@babel/preset-react": "^7.28.5",
     "@expo/config-plugins": "^55.0.6",
     "@semantic-release/git": "^9.0.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.5.0",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^9.1.7",
+    "jest": "^30.3.0",
     "lint-staged": "^16.4.0",
     "prettier": "^3.8.1",
-    "semantic-release": "^17.1.2"
+    "semantic-release": "^17.1.2",
+    "ts-jest": "^29.4.6",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "@expo/config-plugins": ">=7.0.0",
@@ -69,9 +77,32 @@
       "optional": true
     }
   },
+  "jest": {
+    "testMatch": [
+      "<rootDir>/plugin/src/**/*.test.ts"
+    ],
+    "transform": {
+      "^.+\\.ts$": [
+        "ts-jest",
+        {
+          "tsconfig": {
+            "module": "commonjs",
+            "esModuleInterop": true,
+            "types": [
+              "jest",
+              "node"
+            ]
+          }
+        }
+      ]
+    }
+  },
   "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx}": [
+    "src/**/*.{js,jsx}": [
       "yarn lint:fix"
+    ],
+    "plugin/src/**/*.ts": [
+      "prettier --write"
     ],
     "*.json": [
       "prettier --write"
