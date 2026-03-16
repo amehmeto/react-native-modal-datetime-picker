@@ -52,12 +52,12 @@ const DateTimePickerModal = memo(
     if (!isVisible || !currentMode) return null;
 
     const handleChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
-      if (event.type === "dismissed") {
+      if (event.type === "dismissed" || !selectedDate) {
         onCancel();
         onHide(false);
         return;
       }
-      let nextDate = selectedDate!;
+      let nextDate = selectedDate;
       if (mode === "datetime") {
         if (currentMode === "date") {
           setCurrentMode("time");

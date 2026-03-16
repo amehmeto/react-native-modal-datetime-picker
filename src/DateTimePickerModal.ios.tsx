@@ -233,6 +233,8 @@ export class DateTimePickerModal extends React.PureComponent<
               {...otherProps}
               value={this.state.currentDate}
               onChange={this.handleChange}
+              // Workaround: inline datetime picker in a Modal sometimes renders
+              // incorrectly without an explicit height (seen since datetimepicker 6.7.0).
               style={[
                 {
                   height:

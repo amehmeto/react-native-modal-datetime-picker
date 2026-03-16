@@ -5,12 +5,10 @@
   "main": "src/index.ts",
   "files": [
     "src/",
-    "typings/",
     "plugin/build/",
     "plugin/src/",
     "app.plugin.js"
   ],
-  "typings": "typings/index.d.ts",
   "keywords": [
     "react-native",
     "react",

@@ -4,8 +4,6 @@
     "module": "ESNext",
     "lib": ["ES2020"],
     "jsx": "react",
-    "declaration": true,
-    "declarationDir": "typings",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
