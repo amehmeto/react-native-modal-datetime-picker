@@ -55,5 +55,4 @@ example-expo/ios/
 # Firebase
 firebase-debug.log
 
-# npm
-package-lock.json
+example-expo/package-lock.json

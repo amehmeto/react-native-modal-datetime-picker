@@ -17,5 +17,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: yarn --pure-lockfile
-      - run: yarn test
+      - run: npm ci
+      - run: npm test

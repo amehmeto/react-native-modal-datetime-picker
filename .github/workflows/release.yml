@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: '20'
       - name: Install dependencies
-        run: yarn --pure-lockfile
+        run: npm ci
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
