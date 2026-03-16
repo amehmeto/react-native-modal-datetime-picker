@@ -8,6 +8,7 @@ const {
   AndroidConfig,
 } = require("@expo/config-plugins");
 const { writeXMLAsync } = require("@expo/config-plugins/build/utils/XML");
+const fs = require("fs");
 const path = require("path");
 
 const { assignStylesValue, getAppThemeGroup } = AndroidConfig.Styles;
@@ -156,7 +157,10 @@ const getBorderRadiusDp = (theme) => {
 };
 
 const needsRoundedDrawable = (theme) => {
-  return theme && theme.windowBackground && getBorderRadiusDp(theme) !== null;
+  if (!theme || !theme.windowBackground) return false;
+  const radiusDp = getBorderRadiusDp(theme);
+  if (radiusDp === null || radiusDp === "0dp") return false;
+  return true;
 };
 
 const buildRoundedDrawableXml = (colorValue, radiusDp) => ({
@@ -190,19 +194,19 @@ const writeRoundedDrawables = async (projectRoot, android) => {
     const bgColor = theme.windowBackground;
 
     if (bgColor.light) {
+      const drawableDir = path.join(resourceFolder, "drawable");
+      fs.mkdirSync(drawableDir, { recursive: true });
       await writeXMLAsync({
-        path: path.join(resourceFolder, "drawable", `${drawableName}.xml`),
+        path: path.join(drawableDir, `${drawableName}.xml`),
         xml: buildRoundedDrawableXml(bgColor.light, radiusDp),
       });
     }
 
     if (bgColor.dark) {
+      const drawableNightDir = path.join(resourceFolder, "drawable-night");
+      fs.mkdirSync(drawableNightDir, { recursive: true });
       await writeXMLAsync({
-        path: path.join(
-          resourceFolder,
-          "drawable-night",
-          `${drawableName}.xml`,
-        ),
+        path: path.join(drawableNightDir, `${drawableName}.xml`),
         xml: buildRoundedDrawableXml(bgColor.dark, radiusDp),
       });
     }
@@ -314,15 +318,27 @@ const withTimePickerDialogTheme = (baseConfig, options = {}) => {
   });
 
   // Generate rounded background drawables when borderRadius + windowBackground are both set.
-  newConfig = withDangerousMod(newConfig, [
-    "android",
-    async (config) => {
-      await writeRoundedDrawables(config.modRequest.projectRoot, android);
-      return config;
-    },
-  ]);
+  const anyNeedsDrawable = PICKER_CONFIGS.some((c) =>
+    needsRoundedDrawable(android[c.optionKey]),
+  );
+  if (anyNeedsDrawable) {
+    newConfig = withDangerousMod(newConfig, [
+      "android",
+      async (config) => {
+        await writeRoundedDrawables(config.modRequest.projectRoot, android);
+        return config;
+      },
+    ]);
+  }
 
   return newConfig;
 };
 
 module.exports = withTimePickerDialogTheme;
+module.exports._internals = {
+  getBorderRadiusDp,
+  needsRoundedDrawable,
+  buildRoundedDrawableXml,
+  setAndroidPickerStyles,
+  PICKER_CONFIGS,
+};

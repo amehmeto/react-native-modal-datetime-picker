@@ -29,9 +29,9 @@
   },
   "scripts": {
     "prepare": "husky",
-    "lint": "eslint src",
+    "lint": "eslint src plugin",
     "lint:fix": "yarn lint --fix",
-    "test": "yarn run lint",
+    "test": "yarn run lint && jest",
     "release": "yarn semantic-release",
     "example:setup": "cd example && yarn setup",
     "example:copy": "cd example && yarn copy",
@@ -55,6 +55,7 @@
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^9.1.7",
+    "jest": "^30.3.0",
     "lint-staged": "^16.4.0",
     "prettier": "^3.8.1",
     "semantic-release": "^17.1.2"
