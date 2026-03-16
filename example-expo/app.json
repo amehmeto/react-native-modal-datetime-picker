@@ -32,12 +32,16 @@
         {
           "android": {
             "timePickerDialog": {
-              "colorControlNormal": { "light": "#FFFFFF", "dark": "#FFFFFF" },
+              "colorControlNormal": { "light": "#94A3B8", "dark": "#94A3B8" },
+              "colorControlActivated": {
+                "light": "#00D4FF",
+                "dark": "#00D4FF"
+              },
               "colorAccent": { "light": "#00D4FF", "dark": "#00D4FF" },
               "windowBackground": { "light": "#1E293B", "dark": "#1E293B" },
               "textColor": { "light": "#FFFFFF", "dark": "#FFFFFF" },
-              "textColorPrimary": { "light": "#0C207A", "dark": "#0C207A" },
-              "textColorSecondary": { "light": "#0C207A", "dark": "#0C207A" },
+              "textColorPrimary": { "light": "#F1F5F9", "dark": "#F1F5F9" },
+              "textColorSecondary": { "light": "#CBD5E1", "dark": "#CBD5E1" },
               "borderRadius": 12
             }
           }
