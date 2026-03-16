@@ -1,0 +1,53 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": { "correctness": "off" },
+  "plugins": ["typescript", "unicorn", "vitest", "import"],
+  "rules": {
+    "no-console": "error",
+    "eqeqeq": "error",
+    "no-nested-ternary": "error",
+    "no-else-return": "error",
+    "prefer-const": "error",
+    "complexity": ["warn", { "max": 10 }],
+    "no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ],
+    "typescript/no-explicit-any": "error",
+    "typescript/no-unnecessary-condition": "error",
+    "typescript/consistent-type-assertions": [
+      "error",
+      { "assertionStyle": "never" }
+    ],
+    "typescript/prefer-optional-chain": "error",
+    "typescript/prefer-nullish-coalescing": "error",
+    "typescript/restrict-template-expressions": "off",
+    "typescript/no-floating-promises": "off",
+    "typescript/unbound-method": "off",
+    "unicorn/no-nested-ternary": "off", // off to avoid double-reporting with core no-nested-ternary
+    "unicorn/no-thenable": "off",
+    "unicorn/prefer-ternary": "error",
+    "import/no-duplicates": "error",
+    "vitest/expect-expect": "off",
+    "vitest/require-to-throw-message": "off",
+    "sort-imports": ["error", { "ignoreDeclarationSort": true }]
+  },
+  "overrides": [
+    {
+      "files": ["**/*.spec.ts", "**/*.test.ts"],
+      "rules": {
+        "vitest/no-commented-out-tests": "error",
+        "vitest/no-conditional-expect": "error",
+        "vitest/no-conditional-in-test": "error",
+        "vitest/no-disabled-tests": "error",
+        "vitest/no-focused-tests": "error",
+        "vitest/no-identical-title": "error",
+        "vitest/prefer-each": "error",
+        "vitest/prefer-hooks-in-order": "error",
+        "vitest/prefer-hooks-on-top": "error",
+        "vitest/prefer-strict-equal": "error"
+      }
+    }
+  ],
+  "ignorePatterns": ["node_modules", "!.claude"]
+}

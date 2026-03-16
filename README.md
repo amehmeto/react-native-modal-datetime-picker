@@ -2,6 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/react-native-modal-datetime-picker.svg)](https://badge.fury.io/js/react-native-modal-datetime-picker)
 ![Supports Android and iOS](https://img.shields.io/badge/platforms-android%20|%20ios-lightgrey.svg)
+![TypeScript](https://img.shields.io/badge/language-TypeScript-blue.svg)
 
 A declarative cross-platform react-native date and time picker.
 
@@ -16,14 +17,10 @@ Under the hood, this library is using [`@react-native-community/datetimepicker`]
 
 ## Setup (for non-Expo projects)
 
-If your project is not using [Expo](https://expo.io/), install the library and the community date/time picker using npm or yarn:
+If your project is not using [Expo](https://expo.io/), install the library and the community date/time picker:
 
 ```bash
-# using npm
-$ npm i react-native-modal-datetime-picker @react-native-community/datetimepicker
-
-# using yarn
-$ yarn add react-native-modal-datetime-picker @react-native-community/datetimepicker
+npm i react-native-modal-datetime-picker @react-native-community/datetimepicker
 ```
 
 Please notice that the `@react-native-community/datetimepicker` package is a native module so [**it might require manual linking**](https://github.com/react-native-community/react-native-datetimepicker#getting-started).
@@ -50,26 +47,25 @@ Refer to the [Appearance](https://docs.expo.io/versions/latest/sdk/appearance/) 
 
 ## Usage
 
-```javascript
-import React, { useState } from "react";
-import { Button, View } from "react-native";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+```tsx
+import React, { useState } from "react"
+import { Button, View } from "react-native"
+import DateTimePickerModal from "react-native-modal-datetime-picker"
 
 const Example = () => {
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false)
 
   const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
+    setDatePickerVisibility(true)
+  }
 
   const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
+    setDatePickerVisibility(false)
+  }
 
-  const handleConfirm = (date) => {
-    console.warn("A date has been picked: ", date);
-    hideDatePicker();
-  };
+  const handleConfirm = (date: Date) => {
+    hideDatePicker()
+  }
 
   return (
     <View>
@@ -81,41 +77,144 @@ const Example = () => {
         onCancel={hideDatePicker}
       />
     </View>
-  );
-};
+  )
+}
 
-export default Example;
+export default Example
 ```
 
 ## Available props
 
-👉 Please notice that **all the [`@react-native-community/react-native-datetimepicker`](https://github.com/react-native-community/react-native-datetimepicker) props are supported** as well!
+All the [`@react-native-community/datetimepicker`](https://github.com/react-native-community/react-native-datetimepicker) props are also supported.
 
-| Name                      | Type      | Default      | Description                                                                                                                                 |
-| ------------------------- | --------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `buttonTextColorIOS`      | string    |              | The color of the confirm button texts (iOS)                                                                                                 |
-| `backdropStyleIOS`        | style     |              | The style of the picker backdrop view style (iOS)                                                                                           |
-| `cancelButtonTestID`      | string    |              | Used to locate cancel button in end-to-end tests                                                                                            |
-| `cancelTextIOS`           | string    | "Cancel"     | The label of the cancel button (iOS)                                                                                                        |
-| `confirmButtonTestID`     | string    |              | Used to locate confirm button in end-to-end tests                                                                                           |
-| `confirmTextIOS`          | string    | "Confirm"    | The label of the confirm button (iOS)                                                                                                       |
-| `customCancelButtonIOS`   | component |              | Overrides the default cancel button component (iOS)                                                                                         |
-| `customConfirmButtonIOS`  | component |              | Overrides the default confirm button component (iOS)                                                                                        |
-| `customHeaderIOS`         | component |              | Overrides the default header component (iOS)                                                                                                |
-| `customPickerIOS`         | component |              | Overrides the default native picker component (iOS)                                                                                         |
-| `date`                    | obj       | new Date()   | Initial selected date/time                                                                                                                  |
-| `isVisible`               | bool      | false        | Show the datetime picker?                                                                                                                   |
-| `isDarkModeEnabled`       | bool?     | undefined    | Forces the picker dark/light mode if set (otherwise fallbacks to the Appearance color scheme) (iOS)                                         |
-| `modalPropsIOS`           | object    | {}           | Additional [modal](https://reactnative.dev/docs/modal) props for iOS                                                                        |
-| `modalStyleIOS`           | style     |              | Style of the modal content (iOS)                                                                                                            |
-| `mode`                    | string    | "date"       | Choose between "date", "time", and "datetime"                                                                                               |
-| `onCancel`                | func      | **REQUIRED** | Function called on dismiss                                                                                                                  |
-| `onChange`                | func      | () => null   | Function called when the date changes (with the new date as parameter).                                                                     |
-| `onConfirm`               | func      | **REQUIRED** | Function called on date or time picked. It returns the date or time as a JavaScript Date object                                             |
-| `onHide`                  | func      | () => null   | Called after the hide animation                                                                                                             |
-| `pickerContainerStyleIOS` | style     |              | The style of the picker container (iOS)                                                                                                     |
-| `pickerStyleIOS`          | style     |              | The style of the picker component wrapper (iOS)                                                                                             |
-| `pickerComponentStyleIOS` | style     |              | The style applied to the actual picker component - this can be either a native iOS picker or a custom one if `customPickerIOS` was provided |
+### Common props
+
+| Name        | Type   | Default      | Description                                                                                     |
+| ----------- | ------ | ------------ | ----------------------------------------------------------------------------------------------- |
+| `date`      | obj    | new Date()   | Initial selected date/time                                                                      |
+| `isVisible` | bool   | false        | Show the datetime picker?                                                                       |
+| `mode`      | string | "date"       | Choose between "date", "time", and "datetime"                                                   |
+| `onCancel`  | func   | **REQUIRED** | Function called on dismiss                                                                      |
+| `onChange`  | func   | () => null   | Function called when the date changes (with the new date as parameter).                         |
+| `onConfirm` | func   | **REQUIRED** | Function called on date or time picked. It returns the date or time as a JavaScript Date object |
+| `onHide`    | func   | () => null   | Called after the hide animation                                                                 |
+
+### iOS props
+
+| Name                         | Type      | Default   | Description                                                                                                                                 |
+| ---------------------------- | --------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `animationDurationIOS`       | number    |           | Duration of the show/hide animation in milliseconds                                                                                         |
+| `backdropColorIOS`           | string    |           | Background color of the backdrop overlay                                                                                                    |
+| `backdropOpacityIOS`         | number    |           | Opacity of the backdrop overlay                                                                                                             |
+| `backdropStyleIOS`           | style     |           | The style of the picker backdrop view style                                                                                                 |
+| `backgroundColorIOS`         | string    |           | Background color of the picker container                                                                                                    |
+| `borderColorIOS`             | string    |           | Border color of the confirm button                                                                                                          |
+| `borderColorDarkIOS`         | string    |           | Border color of the confirm button in dark mode (falls back to `borderColorIOS`)                                                            |
+| `borderRadiusIOS`            | number    |           | Border radius of the picker container and cancel button                                                                                     |
+| `buttonFontSizeIOS`          | number    |           | Font size of the confirm and cancel button text                                                                                             |
+| `buttonHeightIOS`            | number    |           | Height of the confirm and cancel buttons                                                                                                    |
+| `buttonTextColorIOS`         | string    |           | The color of the confirm and cancel button text                                                                                             |
+| `cancelButtonFontFamilyIOS`  | string    |           | Font family of the cancel button text                                                                                                       |
+| `cancelButtonFontWeightIOS`  | string    |           | Font weight of the cancel button text                                                                                                       |
+| `cancelButtonTestID`         | string    |           | Used to locate cancel button in end-to-end tests                                                                                            |
+| `cancelTextIOS`              | string    | "Cancel"  | The label of the cancel button                                                                                                              |
+| `confirmButtonFontFamilyIOS` | string    |           | Font family of the confirm button text                                                                                                      |
+| `confirmButtonFontWeightIOS` | string    |           | Font weight of the confirm button text                                                                                                      |
+| `confirmButtonTestID`        | string    |           | Used to locate confirm button in end-to-end tests                                                                                           |
+| `confirmTextIOS`             | string    | "Confirm" | The label of the confirm button                                                                                                             |
+| `customCancelButtonIOS`      | component |           | Overrides the default cancel button component                                                                                               |
+| `customConfirmButtonIOS`     | component |           | Overrides the default confirm button component                                                                                              |
+| `customHeaderIOS`            | component |           | Overrides the default header component                                                                                                      |
+| `customPickerIOS`            | component |           | Overrides the default native picker component                                                                                               |
+| `highlightColorIOS`          | string    |           | Underlay color when a button is pressed                                                                                                     |
+| `isDarkModeEnabled`          | bool?     | undefined | Forces the picker dark/light mode if set (otherwise fallbacks to the Appearance color scheme)                                               |
+| `modalPropsIOS`              | object    | {}        | Additional [modal](https://reactnative.dev/docs/modal) props                                                                                |
+| `modalStyleIOS`              | style     |           | Style of the modal content                                                                                                                  |
+| `pickerComponentStyleIOS`    | style     |           | The style applied to the actual picker component - this can be either a native iOS picker or a custom one if `customPickerIOS` was provided |
+| `pickerContainerStyleIOS`    | style     |           | The style of the picker container                                                                                                           |
+| `pickerStyleIOS`             | style     |           | The style of the picker component wrapper                                                                                                   |
+
+## Android Expo Config Plugin
+
+For Expo projects, you can customize the Android picker theme (colors, border radius, etc.) using the built-in config plugin. Add it to your `app.json` or `app.config.js`:
+
+```json
+{
+  "expo": {
+    "plugins": [
+      [
+        "react-native-modal-datetime-picker",
+        {
+          "android": {
+            "timePickerDialog": {
+              "colorAccent": { "light": "#38BDF8", "dark": "#7DD3FC" },
+              "windowBackground": { "light": "#FFFFFF", "dark": "#1E293B" },
+              "borderRadius": 16
+            },
+            "datePickerDialog": {
+              "colorAccent": { "light": "#38BDF8", "dark": "#7DD3FC" },
+              "windowBackground": { "light": "#FFFFFF", "dark": "#1E293B" },
+              "borderRadius": 16
+            }
+          }
+        }
+      ]
+    ]
+  }
+}
+```
+
+### Available Android theme scopes
+
+The plugin supports four theming scopes, each with their own set of attributes:
+
+**`timePickerDialog` / `datePickerDialog`** (dialog-level theming):
+
+| Attribute                      | Type        | Description                                                                    |
+| ------------------------------ | ----------- | ------------------------------------------------------------------------------ |
+| `parentTheme`                  | string      | Custom parent theme (default: `Theme.AppCompat.Light.Dialog`)                  |
+| `borderRadius`                 | number      | Dialog corner radius in dp (requires API 28+)                                  |
+| `windowBackground`             | ThemedColor | Dialog background (generates rounded drawable when combined with borderRadius) |
+| `colorAccent`                  | ThemedColor | Accent color (selection highlight, buttons)                                    |
+| `colorPrimary`                 | ThemedColor | Primary color                                                                  |
+| `colorControlActivated`        | ThemedColor | Color of activated controls                                                    |
+| `colorControlHighlight`        | ThemedColor | Color of control highlights                                                    |
+| `colorControlNormal`           | ThemedColor | Color of normal controls                                                       |
+| `textColor`                    | ThemedColor | Text color                                                                     |
+| `textColorPrimary`             | ThemedColor | Primary text color                                                             |
+| `textColorSecondary`           | ThemedColor | Secondary text color                                                           |
+| `textColorPrimaryInverse`      | ThemedColor | Inverse primary text color                                                     |
+| `textColorSecondaryInverse`    | ThemedColor | Inverse secondary text color                                                   |
+| `buttonBarPositiveButtonStyle` | string      | Style resource for the positive button                                         |
+| `buttonBarNegativeButtonStyle` | string      | Style resource for the negative button                                         |
+
+**`timePickerWidget`** (time picker widget theming):
+
+| Attribute                     | Type        | Description                               |
+| ----------------------------- | ----------- | ----------------------------------------- |
+| `background`                  | ThemedColor | Widget background                         |
+| `headerBackground`            | ThemedColor | Header background color                   |
+| `headerSelectedTextColor`     | ThemedColor | Selected text color in the header         |
+| `numbersTextColor`            | ThemedColor | Clock numbers text color                  |
+| `numbersInnerTextColor`       | ThemedColor | Inner clock numbers text color (24h mode) |
+| `numbersBackgroundColor`      | ThemedColor | Clock numbers background                  |
+| `numbersSelectorColor`        | ThemedColor | Clock selector (hand) color               |
+| `amPmTextColor`               | ThemedColor | AM/PM text color                          |
+| `amPmBackgroundColor`         | ThemedColor | AM/PM background color                    |
+| `amPmSelectedBackgroundColor` | ThemedColor | AM/PM selected background color           |
+
+**`datePickerWidget`** (date picker widget theming):
+
+| Attribute                   | Type        | Description                       |
+| --------------------------- | ----------- | --------------------------------- |
+| `headerBackground`          | ThemedColor | Header background color           |
+| `headerSelectedTextColor`   | ThemedColor | Selected text color in the header |
+| `calendarTextColor`         | ThemedColor | Calendar text color               |
+| `calendarSelectedTextColor` | ThemedColor | Selected date text color          |
+| `yearListSelectorColor`     | ThemedColor | Year list selector color          |
+| `dayOfWeekBackground`       | ThemedColor | Day-of-week row background        |
+
+`ThemedColor` is an object with optional `light` and `dark` values: `{ light?: string, dark?: string }`. At least a `light` value is required.
 
 ## Frequently Asked Questions
 
@@ -197,8 +296,9 @@ You can use the [`minimumDate`](https://github.com/react-native-datetimepicker/d
 
 ### How do I change the color of the Android date and time pickers?
 
-This is more a React-Native specific question than a react-native-modal-datetime-picker one.  
-See issue [#29](https://github.com/mmazzarolo/react-native-modal-datetime-picker/issues/29) and [#106](https://github.com/mmazzarolo/react-native-modal-datetime-picker/issues/106) for some solutions.
+If you're using Expo, use the [Android Expo Config Plugin](#android-expo-config-plugin) to customize the picker theme declaratively in your `app.json`.
+
+For non-Expo projects, see issue [#29](https://github.com/mmazzarolo/react-native-modal-datetime-picker/issues/29) and [#106](https://github.com/mmazzarolo/react-native-modal-datetime-picker/issues/106) for some solutions.
 
 ### How to set a 24-hours format in iOS?
 
@@ -243,8 +343,8 @@ Unfortunately this is a know issue with React-Native on iOS. Even by using the `
 
 ```js
 const handleHide = () => {
-  setTimeout(() => Alert.alert("Hello"), 0);
-};
+  setTimeout(() => Alert.alert("Hello"), 0)
+}
 ```
 
 See issue [#512](https://github.com/mmazzarolo/react-native-modal-datetime-picker/issues/512) for more info.
