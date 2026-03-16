@@ -37,7 +37,8 @@
               "windowBackground": { "light": "#1E293B", "dark": "#1E293B" },
               "textColor": { "light": "#FFFFFF", "dark": "#FFFFFF" },
               "textColorPrimary": { "light": "#0C207A", "dark": "#0C207A" },
-              "textColorSecondary": { "light": "#0C207A", "dark": "#0C207A" }
+              "textColorSecondary": { "light": "#0C207A", "dark": "#0C207A" },
+              "borderRadius": 12
             }
           }
         }
