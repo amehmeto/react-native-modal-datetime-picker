@@ -162,11 +162,9 @@ export class DateTimePickerModal extends React.PureComponent<
     }
   }
 
-  private resolveContainerStyle() {
-    const { isDarkModeEnabled, backgroundColorIOS, borderRadiusIOS } =
-      this.props
-    const dark = resolveDarkMode(isDarkModeEnabled)
-    const themedStyle = dark
+  private resolveContainerStyle(isDark: boolean) {
+    const { backgroundColorIOS, borderRadiusIOS } = this.props
+    const themedStyle = isDark
       ? pickerStyles.containerDark
       : pickerStyles.containerLight
     const overrides = {
@@ -177,21 +175,16 @@ export class DateTimePickerModal extends React.PureComponent<
   }
 
   private resolvePickerHeight() {
-    const { customPickerIOS, display, ...otherProps } = this.props
-    if (
-      !customPickerIOS &&
-      otherProps.mode === "datetime" &&
-      display === "inline"
-    ) {
+    const { customPickerIOS, display, mode } = this.props
+    if (!customPickerIOS && mode === "datetime" && display === "inline") {
       return 370
     }
     return undefined
   }
 
-  private resolveBorderColor() {
+  private resolveBorderColor(isDark: boolean) {
     const { borderColorIOS, borderColorDarkIOS } = this.props
-    const dark = resolveDarkMode(this.props.isDarkModeEnabled)
-    if (dark) return borderColorDarkIOS || borderColorIOS
+    if (isDark) return borderColorDarkIOS || borderColorIOS
     return borderColorIOS
   }
 
@@ -256,7 +249,10 @@ export class DateTimePickerModal extends React.PureComponent<
         {...modalPropsIOS}
       >
         <View
-          style={[...this.resolveContainerStyle(), pickerContainerStyleIOS]}
+          style={[
+            ...this.resolveContainerStyle(_isDarkModeEnabled),
+            pickerContainerStyleIOS,
+          ]}
         >
           {HeaderComponent && <HeaderComponent />}
           {!HeaderComponent && display === "inline" && (
@@ -287,7 +283,7 @@ export class DateTimePickerModal extends React.PureComponent<
             onPress={this.handleConfirm}
             label={confirmTextIOS!}
             buttonTextColorIOS={buttonTextColorIOS}
-            borderColor={this.resolveBorderColor()}
+            borderColor={this.resolveBorderColor(_isDarkModeEnabled)}
             highlightColor={highlightColorIOS}
             buttonHeight={buttonHeightIOS}
             fontSize={buttonFontSizeIOS}
