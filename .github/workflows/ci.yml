@@ -42,7 +42,7 @@ jobs:
           node-version: '20'
 
       - name: Install library dependencies
-        run: npm install --legacy-peer-deps
+        run: npm ci
 
       - name: Build plugin
         run: npm run build:plugin

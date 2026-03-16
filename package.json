@@ -40,7 +40,6 @@
     "example:android": "cd example && react-native run-android",
     "example:ios": "cd example && react-native run-ios"
   },
-  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.29.0",
     "@babel/eslint-parser": "^7.28.6",
@@ -53,7 +52,6 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
-    "@types/react-native": "^0.73.0",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
