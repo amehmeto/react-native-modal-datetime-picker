@@ -13,6 +13,9 @@ import path from "path";
 const { assignStylesValue, getAppThemeGroup } = AndroidConfig.Styles;
 const { assignColorValue } = AndroidConfig.Colors;
 
+type StylesXml = Parameters<typeof assignStylesValue>[0];
+type ColorsXml = Parameters<typeof assignColorValue>[0];
+
 const moduleName = "ModalDateTimePicker: ";
 
 interface ThemedColor {
@@ -183,10 +186,7 @@ const setAndroidColors = (
       name: `${attrPrefix}_${attrName}`,
       value: themedColorExtractor(colorValues as ThemedColor, attrName) ?? null,
     };
-    return assignColorValue(
-      acc as Parameters<typeof assignColorValue>[0],
-      color,
-    );
+    return assignColorValue(acc as ColorsXml, color);
   }, colors);
 };
 
@@ -243,9 +243,11 @@ const writeRoundedDrawables = async (
     if (!needsRoundedDrawable(theme)) {
       continue;
     }
-    const radiusDp = getBorderRadiusDp(theme!)!;
+    // needsRoundedDrawable guarantees theme, windowBackground, and radiusDp are defined
+    const validTheme = theme as ThemeConfig;
+    const radiusDp = getBorderRadiusDp(validTheme) as string;
     const drawableName = `${pickerConfig.attrPrefix.toLowerCase()}_rounded_bg`;
-    const bgColor = theme!.windowBackground!;
+    const bgColor = validTheme.windowBackground as ThemedColor;
 
     if (bgColor.light) {
       const drawableDir = path.join(resourceFolder, "drawable");
@@ -302,7 +304,7 @@ export const setAndroidPickerStyles = (
     // When borderRadius + windowBackground are both set, point windowBackground
     // to the generated rounded drawable instead of the flat color resource.
     if (useRoundedDrawable && userFacingAttrName === "windowBackground") {
-      return assignStylesValue(acc as Parameters<typeof assignStylesValue>[0], {
+      return assignStylesValue(acc as StylesXml, {
         add: true,
         parent: { name: styleName, parent: parentTheme },
         name: attrName,
@@ -315,7 +317,7 @@ export const setAndroidPickerStyles = (
         ? `${rawValue}dp`
         : (rawValue as string)
       : `@color/${attrPrefix}_${userFacingAttrName}`;
-    return assignStylesValue(acc as Parameters<typeof assignStylesValue>[0], {
+    return assignStylesValue(acc as StylesXml, {
       add: true,
       parent: {
         name: styleName,
@@ -326,15 +328,12 @@ export const setAndroidPickerStyles = (
     });
   }, styles);
 
-  result = assignStylesValue(
-    result as Parameters<typeof assignStylesValue>[0],
-    {
-      add: true,
-      parent: getAppThemeGroup(),
-      name: themeAttribute,
-      value: `@style/${styleName}`,
-    },
-  );
+  result = assignStylesValue(result as StylesXml, {
+    add: true,
+    parent: getAppThemeGroup(),
+    name: themeAttribute,
+    value: `@style/${styleName}`,
+  });
 
   return result;
 };
