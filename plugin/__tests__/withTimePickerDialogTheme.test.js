@@ -8,9 +8,6 @@ const {
   PICKER_CONFIGS,
 } = require("../withTimePickerDialogTheme")._internals;
 
-const { AndroidConfig } = require("@expo/config-plugins");
-const { assignStylesValue, getAppThemeGroup } = AndroidConfig.Styles;
-
 // Minimal styles stub matching Expo's XML resource format
 const emptyStyles = () => ({
   resources: {
