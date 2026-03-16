@@ -15,10 +15,11 @@ All work on React Native Modal Datetime Picker happens directly on GitHub. Contr
 
 ## Tests & Verifications
 
-Currently we use `eslint` with `prettier` for linting and formatting the code. They are run on CircleCI for all opened pull requests, but you should use them locally when making changes.
+We use `oxlint` for linting and `prettier` for formatting. They are run in CI for all opened pull requests, but you should use them locally when making changes.
 
-- `npm run lint`: Run `eslint`.
-- `npm run lint:fix`: Run `eslint` and automatically fix issues. This is useful for correcting code formatting.
+- `npm run lint`: Run `oxlint`.
+- `npm run lint:fix`: Run `oxlint` with auto-fix.
+- `npm test`: Run linting, type-checking, and tests (Vitest).
 
 ## Sending a pull request
 
