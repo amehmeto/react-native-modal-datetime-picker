@@ -1,21 +1,20 @@
-"use strict";
-
-const {
+import {
   getBorderRadiusDp,
   needsRoundedDrawable,
   buildRoundedDrawableXml,
   setAndroidPickerStyles,
   PICKER_CONFIGS,
-} = require("../withTimePickerDialogTheme")._internals;
+} from "../withTimePickerDialogTheme";
+import type { ThemeConfig, PickerConfig } from "../withTimePickerDialogTheme";
 
 // Minimal styles stub matching Expo's XML resource format
 const emptyStyles = () => ({
   resources: {
-    style: [],
+    style: [] as unknown[],
   },
 });
 
-const DIALOG_PICKER_CONFIG = PICKER_CONFIGS[0]; // timePickerDialog
+const DIALOG_PICKER_CONFIG: PickerConfig = PICKER_CONFIGS[0]; // timePickerDialog
 
 describe("getBorderRadiusDp", () => {
   it("returns dp string for a valid numeric borderRadius", () => {
@@ -33,22 +32,12 @@ describe("getBorderRadiusDp", () => {
   });
 
   it("throws for non-number borderRadius", () => {
-    expect(() => getBorderRadiusDp({ borderRadius: "8dp" })).toThrow(
-      "non-negative number",
-    );
+    expect(() =>
+      getBorderRadiusDp({ borderRadius: "8dp" } as unknown as ThemeConfig),
+    ).toThrow("non-negative number");
   });
 
-  it("falls back to dialogCornerRadius when borderRadius is absent", () => {
-    expect(getBorderRadiusDp({ dialogCornerRadius: "8dp" })).toBe("8dp");
-  });
-
-  it("borderRadius takes precedence over dialogCornerRadius", () => {
-    expect(
-      getBorderRadiusDp({ borderRadius: 16, dialogCornerRadius: "8dp" }),
-    ).toBe("16dp");
-  });
-
-  it("returns null when neither is set", () => {
+  it("returns null when borderRadius is not set", () => {
     expect(getBorderRadiusDp({})).toBeNull();
   });
 });
@@ -81,19 +70,10 @@ describe("needsRoundedDrawable", () => {
     expect(needsRoundedDrawable(undefined)).toBe(false);
   });
 
-  it("returns false when neither borderRadius nor dialogCornerRadius is set", () => {
+  it("returns false when borderRadius is not set", () => {
     expect(needsRoundedDrawable({ windowBackground: { light: "#FFF" } })).toBe(
       false,
     );
-  });
-
-  it("returns true with dialogCornerRadius fallback", () => {
-    expect(
-      needsRoundedDrawable({
-        windowBackground: { light: "#FFF" },
-        dialogCornerRadius: "8dp",
-      }),
-    ).toBe(true);
   });
 });
 
@@ -112,6 +92,22 @@ describe("buildRoundedDrawableXml", () => {
     });
   });
 });
+
+interface StyleItem {
+  $: { name: string };
+  _: string;
+}
+
+interface StyleEntry {
+  $: { name: string; parent?: string };
+  item: StyleItem[];
+}
+
+interface StylesResult {
+  resources: {
+    style: StyleEntry[];
+  };
+}
 
 describe("setAndroidPickerStyles", () => {
   it("returns styles unchanged when theme is null", () => {
@@ -135,33 +131,15 @@ describe("setAndroidPickerStyles", () => {
       emptyStyles(),
       { borderRadius: 16 },
       DIALOG_PICKER_CONFIG,
-    );
-    const styleEntries = styles.resources.style;
-    const dialogStyle = styleEntries.find(
-      (s) => s.$.name === "TimePickerDialogTheme",
-    );
-    expect(dialogStyle).toBeDefined();
-    const cornerItem = dialogStyle.item.find(
-      (i) => i.$.name === "android:dialogCornerRadius",
-    );
-    expect(cornerItem._).toBe("16dp");
-  });
-
-  it("skips dialogCornerRadius when borderRadius takes precedence", () => {
-    const styles = setAndroidPickerStyles(
-      emptyStyles(),
-      { borderRadius: 16, dialogCornerRadius: "8dp" },
-      DIALOG_PICKER_CONFIG,
-    );
+    ) as StylesResult;
     const dialogStyle = styles.resources.style.find(
       (s) => s.$.name === "TimePickerDialogTheme",
     );
-    const cornerItems = dialogStyle.item.filter(
+    expect(dialogStyle).toBeDefined();
+    const cornerItem = dialogStyle!.item.find(
       (i) => i.$.name === "android:dialogCornerRadius",
     );
-    // Should only have one entry (from borderRadius), not two
-    expect(cornerItems).toHaveLength(1);
-    expect(cornerItems[0]._).toBe("16dp");
+    expect(cornerItem!._).toBe("16dp");
   });
 
   it("redirects windowBackground to drawable when rounded drawable is needed", () => {
@@ -172,14 +150,14 @@ describe("setAndroidPickerStyles", () => {
         borderRadius: 12,
       },
       DIALOG_PICKER_CONFIG,
-    );
+    ) as StylesResult;
     const dialogStyle = styles.resources.style.find(
       (s) => s.$.name === "TimePickerDialogTheme",
     );
-    const bgItem = dialogStyle.item.find(
+    const bgItem = dialogStyle!.item.find(
       (i) => i.$.name === "android:windowBackground",
     );
-    expect(bgItem._).toBe("@drawable/timepickerdialog_rounded_bg");
+    expect(bgItem!._).toBe("@drawable/timepickerdialog_rounded_bg");
   });
 
   it("uses color resource for windowBackground when no borderRadius", () => {
@@ -189,13 +167,13 @@ describe("setAndroidPickerStyles", () => {
         windowBackground: { light: "#1E293B" },
       },
       DIALOG_PICKER_CONFIG,
-    );
+    ) as StylesResult;
     const dialogStyle = styles.resources.style.find(
       (s) => s.$.name === "TimePickerDialogTheme",
     );
-    const bgItem = dialogStyle.item.find(
+    const bgItem = dialogStyle!.item.find(
       (i) => i.$.name === "android:windowBackground",
     );
-    expect(bgItem._).toBe("@color/timePickerDialog_windowBackground");
+    expect(bgItem!._).toBe("@color/timePickerDialog_windowBackground");
   });
 });

@@ -1,22 +1,58 @@
-"use strict";
-
-const {
+import {
   withAndroidColors,
   withAndroidColorsNight,
   withAndroidStyles,
   withDangerousMod,
   AndroidConfig,
-} = require("@expo/config-plugins");
-const { writeXMLAsync } = require("@expo/config-plugins/build/utils/XML");
-const fs = require("fs");
-const path = require("path");
+  ConfigPlugin,
+} from "@expo/config-plugins";
+import { writeXMLAsync } from "@expo/config-plugins/build/utils/XML";
+import fs from "fs";
+import path from "path";
 
 const { assignStylesValue, getAppThemeGroup } = AndroidConfig.Styles;
 const { assignColorValue } = AndroidConfig.Colors;
 
 const moduleName = "ModalDateTimePicker: ";
 
-const DIALOG_ALLOWED_ATTRIBUTES = {
+interface ThemedColor {
+  light?: string;
+  dark?: string;
+}
+
+interface AttributeEntry {
+  attrName: string;
+  literal?: boolean;
+  numericDp?: boolean;
+}
+
+type AllowedAttributes = Record<string, AttributeEntry>;
+
+interface ThemeConfig {
+  parentTheme?: string;
+  borderRadius?: number;
+  windowBackground?: ThemedColor;
+  [key: string]: unknown;
+}
+
+interface PickerConfig {
+  optionKey: string;
+  styleName: string;
+  themeAttribute: string;
+  defaultParentTheme: string;
+  attrPrefix: string;
+  allowedAttributes: AllowedAttributes;
+}
+
+interface AndroidOptions {
+  [key: string]: ThemeConfig | undefined;
+}
+
+interface PluginOptions {
+  android?: AndroidOptions;
+}
+
+const DIALOG_ALLOWED_ATTRIBUTES: AllowedAttributes = {
   textColorPrimary: { attrName: "android:textColorPrimary" },
   textColorSecondary: { attrName: "android:textColorSecondary" },
   textColorPrimaryInverse: { attrName: "android:textColorPrimaryInverse" },
@@ -33,7 +69,6 @@ const DIALOG_ALLOWED_ATTRIBUTES = {
     literal: true,
     numericDp: true,
   },
-  dialogCornerRadius: { attrName: "android:dialogCornerRadius", literal: true },
   buttonBarPositiveButtonStyle: {
     attrName: "buttonBarPositiveButtonStyle",
     literal: true,
@@ -44,7 +79,7 @@ const DIALOG_ALLOWED_ATTRIBUTES = {
   },
 };
 
-const TIME_PICKER_WIDGET_ALLOWED_ATTRIBUTES = {
+const TIME_PICKER_WIDGET_ALLOWED_ATTRIBUTES: AllowedAttributes = {
   background: { attrName: "android:background" },
   headerBackground: { attrName: "android:headerBackground" },
   headerSelectedTextColor: { attrName: "android:headerSelectedTextColor" },
@@ -59,16 +94,18 @@ const TIME_PICKER_WIDGET_ALLOWED_ATTRIBUTES = {
   },
 };
 
-const DATE_PICKER_WIDGET_ALLOWED_ATTRIBUTES = {
+const DATE_PICKER_WIDGET_ALLOWED_ATTRIBUTES: AllowedAttributes = {
   headerBackground: { attrName: "android:headerBackground" },
   headerSelectedTextColor: { attrName: "android:headerSelectedTextColor" },
   calendarTextColor: { attrName: "android:calendarTextColor" },
-  calendarSelectedTextColor: { attrName: "android:calendarSelectedTextColor" },
+  calendarSelectedTextColor: {
+    attrName: "android:calendarSelectedTextColor",
+  },
   yearListSelectorColor: { attrName: "android:yearListSelectorColor" },
   dayOfWeekBackground: { attrName: "android:dayOfWeekBackground" },
 };
 
-const PICKER_CONFIGS = [
+const PICKER_CONFIGS: PickerConfig[] = [
   {
     optionKey: "timePickerDialog",
     styleName: "TimePickerDialogTheme",
@@ -103,7 +140,16 @@ const PICKER_CONFIGS = [
   },
 ];
 
-const insertColorEntries = (android = {}, config, themedColorExtractor) => {
+type ThemedColorExtractor = (
+  color: ThemedColor,
+  attrName: string,
+) => string | null;
+
+const insertColorEntries = (
+  android: AndroidOptions,
+  config: { modResults: unknown },
+  themedColorExtractor: ThemedColorExtractor,
+): void => {
   for (const pickerConfig of PICKER_CONFIGS) {
     const theme = android[pickerConfig.optionKey];
     if (theme) {
@@ -119,12 +165,12 @@ const insertColorEntries = (android = {}, config, themedColorExtractor) => {
 };
 
 const setAndroidColors = (
-  colors,
-  themedColorExtractor,
-  theme,
-  attrPrefix,
-  allowedAttributes,
-) => {
+  colors: unknown,
+  themedColorExtractor: ThemedColorExtractor,
+  theme: ThemeConfig,
+  attrPrefix: string,
+  allowedAttributes: AllowedAttributes,
+): unknown => {
   return Object.entries(theme).reduce((acc, [attrName, colorValues]) => {
     if (attrName === "parentTheme") {
       return acc;
@@ -135,35 +181,40 @@ const setAndroidColors = (
     }
     const color = {
       name: `${attrPrefix}_${attrName}`,
-      value: themedColorExtractor(colorValues, attrName) ?? null,
+      value: themedColorExtractor(colorValues as ThemedColor, attrName) ?? null,
     };
-    return assignColorValue(acc, color);
+    return assignColorValue(
+      acc as Parameters<typeof assignColorValue>[0],
+      color,
+    );
   }, colors);
 };
 
-const getBorderRadiusDp = (theme) => {
-  if (theme.borderRadius != null) {
-    if (typeof theme.borderRadius !== "number" || theme.borderRadius < 0) {
-      throw new Error(
-        `${moduleName}borderRadius must be a non-negative number, got: ${theme.borderRadius}`,
-      );
-    }
-    return `${theme.borderRadius}dp`;
+export const getBorderRadiusDp = (theme: ThemeConfig): string | null => {
+  if (theme.borderRadius == null) {
+    return null;
   }
-  if (theme.dialogCornerRadius != null) {
-    return theme.dialogCornerRadius;
+  if (typeof theme.borderRadius !== "number" || theme.borderRadius < 0) {
+    throw new Error(
+      `${moduleName}borderRadius must be a non-negative number, got: ${theme.borderRadius}`,
+    );
   }
-  return null;
+  return `${theme.borderRadius}dp`;
 };
 
-const needsRoundedDrawable = (theme) => {
+export const needsRoundedDrawable = (
+  theme: ThemeConfig | null | undefined,
+): boolean => {
   if (!theme || !theme.windowBackground) return false;
   const radiusDp = getBorderRadiusDp(theme);
   if (radiusDp === null || radiusDp === "0dp") return false;
   return true;
 };
 
-const buildRoundedDrawableXml = (colorValue, radiusDp) => ({
+export const buildRoundedDrawableXml = (
+  colorValue: string,
+  radiusDp: string,
+) => ({
   shape: {
     $: {
       "xmlns:android": "http://schemas.android.com/apk/res/android",
@@ -174,7 +225,10 @@ const buildRoundedDrawableXml = (colorValue, radiusDp) => ({
   },
 });
 
-const writeRoundedDrawables = async (projectRoot, android) => {
+const writeRoundedDrawables = async (
+  projectRoot: string,
+  android: AndroidOptions,
+): Promise<void> => {
   const resourceFolder = path.join(
     projectRoot,
     "android",
@@ -189,9 +243,9 @@ const writeRoundedDrawables = async (projectRoot, android) => {
     if (!needsRoundedDrawable(theme)) {
       continue;
     }
-    const radiusDp = getBorderRadiusDp(theme);
+    const radiusDp = getBorderRadiusDp(theme!)!;
     const drawableName = `${pickerConfig.attrPrefix.toLowerCase()}_rounded_bg`;
-    const bgColor = theme.windowBackground;
+    const bgColor = theme!.windowBackground!;
 
     if (bgColor.light) {
       const drawableDir = path.join(resourceFolder, "drawable");
@@ -213,7 +267,11 @@ const writeRoundedDrawables = async (projectRoot, android) => {
   }
 };
 
-const setAndroidPickerStyles = (styles, theme, pickerConfig) => {
+export const setAndroidPickerStyles = (
+  styles: unknown,
+  theme: ThemeConfig | null,
+  pickerConfig: PickerConfig,
+): unknown => {
   if (!theme) {
     return styles;
   }
@@ -228,15 +286,8 @@ const setAndroidPickerStyles = (styles, theme, pickerConfig) => {
   const parentTheme = theme.parentTheme || defaultParentTheme;
   const useRoundedDrawable = needsRoundedDrawable(theme);
 
-  styles = Object.keys(theme).reduce((acc, userFacingAttrName) => {
+  let result = Object.keys(theme).reduce((acc, userFacingAttrName) => {
     if (userFacingAttrName === "parentTheme") {
-      return acc;
-    }
-    // borderRadius takes precedence over deprecated dialogCornerRadius
-    if (
-      userFacingAttrName === "dialogCornerRadius" &&
-      theme.borderRadius != null
-    ) {
       return acc;
     }
     const entry = allowedAttributes[userFacingAttrName];
@@ -251,7 +302,7 @@ const setAndroidPickerStyles = (styles, theme, pickerConfig) => {
     // When borderRadius + windowBackground are both set, point windowBackground
     // to the generated rounded drawable instead of the flat color resource.
     if (useRoundedDrawable && userFacingAttrName === "windowBackground") {
-      return assignStylesValue(acc, {
+      return assignStylesValue(acc as Parameters<typeof assignStylesValue>[0], {
         add: true,
         parent: { name: styleName, parent: parentTheme },
         name: attrName,
@@ -262,9 +313,9 @@ const setAndroidPickerStyles = (styles, theme, pickerConfig) => {
     const value = literal
       ? numericDp
         ? `${rawValue}dp`
-        : rawValue
+        : (rawValue as string)
       : `@color/${attrPrefix}_${userFacingAttrName}`;
-    return assignStylesValue(acc, {
+    return assignStylesValue(acc as Parameters<typeof assignStylesValue>[0], {
       add: true,
       parent: {
         name: styleName,
@@ -275,17 +326,23 @@ const setAndroidPickerStyles = (styles, theme, pickerConfig) => {
     });
   }, styles);
 
-  styles = assignStylesValue(styles, {
-    add: true,
-    parent: getAppThemeGroup(),
-    name: themeAttribute,
-    value: `@style/${styleName}`,
-  });
+  result = assignStylesValue(
+    result as Parameters<typeof assignStylesValue>[0],
+    {
+      add: true,
+      parent: getAppThemeGroup(),
+      name: themeAttribute,
+      value: `@style/${styleName}`,
+    },
+  );
 
-  return styles;
+  return result;
 };
 
-const withTimePickerDialogTheme = (baseConfig, options = {}) => {
+const withTimePickerDialogTheme: ConfigPlugin<PluginOptions> = (
+  baseConfig,
+  options = {},
+) => {
   const { android = {} } = options;
 
   let newConfig = withAndroidColors(baseConfig, (config) => {
@@ -302,7 +359,7 @@ const withTimePickerDialogTheme = (baseConfig, options = {}) => {
   });
 
   newConfig = withAndroidColorsNight(newConfig, (config) => {
-    insertColorEntries(android, config, (color) => color.dark);
+    insertColorEntries(android, config, (color) => color.dark ?? null);
     return config;
   });
 
@@ -310,9 +367,9 @@ const withTimePickerDialogTheme = (baseConfig, options = {}) => {
     for (const pickerConfig of PICKER_CONFIGS) {
       config.modResults = setAndroidPickerStyles(
         config.modResults,
-        android[pickerConfig.optionKey],
+        android[pickerConfig.optionKey] ?? null,
         pickerConfig,
-      );
+      ) as typeof config.modResults;
     }
     return config;
   });
@@ -334,11 +391,6 @@ const withTimePickerDialogTheme = (baseConfig, options = {}) => {
   return newConfig;
 };
 
-module.exports = withTimePickerDialogTheme;
-module.exports._internals = {
-  getBorderRadiusDp,
-  needsRoundedDrawable,
-  buildRoundedDrawableXml,
-  setAndroidPickerStyles,
-  PICKER_CONFIGS,
-};
+export default withTimePickerDialogTheme;
+export { PICKER_CONFIGS };
+export type { ThemeConfig, PickerConfig };

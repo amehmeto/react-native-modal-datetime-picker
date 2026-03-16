@@ -1,1 +1,1 @@
-module.exports = require('./plugin/withTimePickerDialogTheme');
+module.exports = require('./plugin/build/withTimePickerDialogTheme').default;
