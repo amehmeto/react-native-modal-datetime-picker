@@ -21,10 +21,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      # Node stays: @semantic-release/npm publishes with the npm CLI.
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
       - name: Install dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
+        run: bunx semantic-release

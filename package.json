@@ -1,6 +1,7 @@
 {
   "name": "react-native-modal-datetime-picker",
   "version": "18.0.0",
+  "packageManager": "bun@1.4.4",
   "description": "A react-native datetime-picker for Android and iOS",
   "main": "src/index.ts",
   "files": [
@@ -29,14 +30,14 @@
   "scripts": {
     "prepare": "husky",
     "build:plugin": "tsc -p plugin/tsconfig.json",
-    "prepublishOnly": "npm run build:plugin",
+    "prepublishOnly": "bun run build:plugin",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint src plugin/src",
     "lint:fix": "oxlint --fix src plugin/src",
-    "test": "npm run build:plugin && npm run typecheck && vitest run",
-    "release": "npx semantic-release",
-    "example:setup": "cd example && npm install",
-    "example:copy": "cd example && npm run copy",
+    "test": "bun run build:plugin && bun run typecheck && vitest run",
+    "release": "bunx semantic-release",
+    "example:setup": "cd example && bun install",
+    "example:copy": "cd example && bun run copy",
     "example:android": "cd example && react-native run-android",
     "example:ios": "cd example && react-native run-ios"
   },

@@ -44,19 +44,24 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
       - name: Install library dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: Build plugin
-        run: npm run build:plugin
+        run: bun run build:plugin
 
       - name: Install example dependencies
         working-directory: ./example-expo
-        run: npm install
+        run: bun install
 
       - name: Generate Android project (expo prebuild)
         working-directory: ./example-expo
-        run: npx expo prebuild --platform android --no-install
+        run: bunx expo prebuild --platform android --no-install
 
       - name: Verify generated Android theme
         run: |
