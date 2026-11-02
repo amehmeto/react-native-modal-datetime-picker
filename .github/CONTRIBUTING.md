@@ -10,16 +10,16 @@ All work on React Native Modal Datetime Picker happens directly on GitHub. Contr
 > **Working on your first pull request?** You can learn how from this _free_ series: [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github).
 
 1. Fork the repo and create your branch from `master` (a guide on [how to fork a repository](https://help.github.com/articles/fork-a-repo/)).
-2. Run `npm install` to install all required dependencies.
+2. Run `bun install` to install all required dependencies.
 3. Now you are ready to make your changes!
 
 ## Tests & Verifications
 
 We use `oxlint` for linting and `prettier` for formatting. They are run in CI for all opened pull requests, but you should use them locally when making changes.
 
-- `npm run lint`: Run `oxlint`.
-- `npm run lint:fix`: Run `oxlint` with auto-fix.
-- `npm test`: Run linting, type-checking, and tests (Vitest).
+- `bun run lint`: Run `oxlint`.
+- `bun run lint:fix`: Run `oxlint` with auto-fix.
+- `bun run test`: Run linting, type-checking, and tests (Vitest).
 
 ## Sending a pull request
 
