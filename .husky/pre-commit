@@ -1,1 +1,2 @@
+sh .husky/scripts/secrets-check.sh || exit 1
 bunx lint-staged

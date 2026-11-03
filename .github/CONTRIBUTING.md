@@ -11,7 +11,8 @@ All work on React Native Modal Datetime Picker happens directly on GitHub. Contr
 
 1. Fork the repo and create your branch from `master` (a guide on [how to fork a repository](https://help.github.com/articles/fork-a-repo/)).
 2. Run `bun install` to install all required dependencies.
-3. Now you are ready to make your changes!
+3. Install betterleaks (`brew install betterleaks`): the pre-commit hook uses it to block staged secrets.
+4. Now you are ready to make your changes!
 
 ## Tests & Verifications
 

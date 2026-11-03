@@ -1,0 +1,24 @@
+# Betterleaks: default rules, plus the known false positives of this repo.
+# A real secret never goes in a file listed here: it goes in an ignored .env or in GitHub secrets.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Fake passwords in tests"
+paths = [
+  '''(^|/)[^/]+\.(test|spec)\.(ts|tsx|js|mjs|sh)$''',
+  '''(^|/)__tests__/''',
+]
+
+[[allowlists]]
+description = "Firebase client configs: public by design, restricted in the Google Cloud console"
+paths = [
+  '''(^|/)google-services\.json$''',
+  '''(^|/)GoogleService-Info\.plist$''',
+]
+
+[[allowlists]]
+description = "Public Android debug keystore of the example app: its password is the well-known default 'android', not a secret"
+paths = [
+  '''^example/android/keystores/debug\.keystore\.properties$''',
+]
